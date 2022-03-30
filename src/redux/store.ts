@@ -1,4 +1,6 @@
 import {v1} from 'uuid';
+import {profileReducer} from './profile-reducer';
+import {dialogsReducer} from './dialogs-reducer';
 
 export const store: any = {
     _state: {
@@ -22,29 +24,10 @@ export const store: any = {
         }
     },
     dispatch(action: any) {
-        if (action.type === 'UPDATE-POST-TITLE') {
-            this._state.profilePage.newPostTitle = action.postTitle
-            this._callSubscriber(this._state)
-        } else if (action.type === 'ADD-POST') {
-            const newPost = {
-                id: v1(),
-                title: this._state.profilePage.newPostTitle
-            }
-            this._state.profilePage.posts.unshift(newPost)
-            this._state.profilePage.newPostTitle = ''
-            this._callSubscriber(this._state)
-        } else if (action.type === 'UPDATE-MESSAGE-TITLE') {
-            this._state.dialogsPage.newMessageTitle = action.postTitle
-            this._callSubscriber(this._state)
-        } else if (action.type === 'ADD-MESSAGE') {
-            const newMessage = {
-                id: v1(),
-                title: this._state.dialogsPage.newMessageTitle
-            }
-            this._state.dialogsPage.messages.unshift(newMessage)
-            this._state.dialogsPage.newMessageTitle = ''
-            this._callSubscriber(this._state)
-        }
+        this._state.profilePage = profileReducer(this._state.profilePage, action)
+        this._state.dialogsPage = dialogsReducer(this._state.dialogsPage, action)
+        this._callSubscriber(this._state)
+
     },
     getState() {
         return this._state
@@ -55,4 +38,17 @@ export const store: any = {
     subscribe(observer: any) {
         this._callSubscriber = observer
     }
+}
+
+export const updatePostTitleAC = (postTitle: any) => {
+    return {type: 'UPDATE-POST-TITLE', postTitle}
+}
+export const addPostAC = () => {
+    return {type: 'ADD-POST'}
+}
+export const updateMessageTitleAC = (messageTitle: any) => {
+    return {type: 'UPDATE-MESSAGE-TITLE', messageTitle}
+}
+export const addMessageAC = () => {
+    return {type: 'ADD-MESSAGE'}
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
+import {addMessageAC, addPostAC, updateMessageTitleAC, updatePostTitleAC} from './redux/store';
 
 export function App(props: any) {
     return (
@@ -54,10 +55,10 @@ function Profile(props: any) {
     const textRef: any = React.createRef()
 
     const onChange = () => {
-        props.dispatch({type: 'UPDATE-POST-TITLE', postTitle: textRef.current.value})
+        props.dispatch(updatePostTitleAC(textRef.current.value))
     }
     const onClick = () => {
-        props.dispatch({type: 'ADD-POST'})
+        props.dispatch(addPostAC())
     }
     return (
         <div className="Main">
@@ -81,10 +82,10 @@ function Dialogs(props: any) {
     const textRef: any = React.createRef()
 
     const onChange = () => {
-        props.dispatch({type: 'UPDATE-MESSAGE-TITLE', postTitle: textRef.current.value})
+        props.dispatch(updateMessageTitleAC(textRef.current.value))
     }
     const onClick = () => {
-        props.dispatch({type: 'ADD-MESSAGE'})
+        props.dispatch(addMessageAC())
     }
     return (
         <div className="Main">
