@@ -7,20 +7,19 @@ import {BrowserRouter} from 'react-router-dom';
 import {store} from './redux/redux-store';
 
 
-function renderApp(state: any) {
+function renderApp() {
     ReactDOM.render(
         <BrowserRouter>
-            <App state={state}
-                 dispatch={store.dispatch}/>
+            <App store={store}/>
         </BrowserRouter>
         ,
         document.getElementById('root')
     );
 }
 
-renderApp(store.getState())
+renderApp()
 
-store.subscribe(()=>renderApp(store.getState()))
+store.subscribe(()=>renderApp())
 
 
 // If you want to start measuring performance in your app, pass a function

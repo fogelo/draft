@@ -9,8 +9,7 @@ export function App(props: any) {
             <Header/>
             <div className={'content'}>
                 <Menu/>
-                <Main state={props.state}
-                      dispatch={props.dispatch}
+                <Main store={props.store}
                 />
             </div>
         </div>
@@ -40,11 +39,8 @@ function Main(props: any) {
     return (
         <div className="Main">
             <Routes>
-                <Route path={'/profile'} element={<Profile profilePage={props.state.profilePage}
-                                                           dispatch={props.dispatch}
-                />}/>
-                <Route path={'/dialogs'} element={<Dialogs dialogsPage={props.state.dialogsPage}
-                                                           dispatch={props.dispatch}/>}/>
+                <Route path={'/profile'} element={<ProfileContainer store={props.store}/>}/>
+                <Route path={'/dialogs'} element={<DialogsContainer store={props.store}/>}/>
             </Routes>
         </div>
     );
@@ -55,10 +51,10 @@ function Profile(props: any) {
     const textRef: any = React.createRef()
 
     const onChange = () => {
-        props.dispatch(updatePostTitleAC(textRef.current.value))
+        props.updatePostTitle(textRef.current.value)
     }
     const onClick = () => {
-        props.dispatch(addPostAC())
+        props.addPost()
     }
     return (
         <div className="Main">
@@ -66,41 +62,69 @@ function Profile(props: any) {
             <div>My posts</div>
             <div style={{display: 'flex'}}>
                 <textarea ref={textRef}
-                          value={props.profilePage.newPostTitle}
+                          value={props.newPostTitle}
                           onChange={onChange}/>
                 <button onClick={onClick}>add post</button>
             </div>
             {
-                props.profilePage.posts.map((p: any) => <div key={p.id}>{p.title}</div>)
+                props.posts.map((p: any) => <div key={p.id}>{p.title}</div>)
             }
 
         </div>
     );
+}
+
+function ProfileContainer(props: any) {
+    const state = props.store.getState()
+    const updatePostTitle = (text: any) => {
+        props.store.dispatch(updatePostTitleAC(text))
+    }
+    const addPost = () => {
+        props.store.dispatch(addPostAC())
+    }
+    return <Profile updatePostTitle={updatePostTitle}
+                    addPost={addPost}
+                    posts={state.profilePage.posts}
+                    newPostTitle={state.profilePage.newPostTitle}/>
 }
 
 function Dialogs(props: any) {
     const textRef: any = React.createRef()
 
     const onChange = () => {
-        props.dispatch(updateMessageTitleAC(textRef.current.value))
+        props.updateMessageTitle(textRef.current.value)
     }
     const onClick = () => {
-        props.dispatch(addMessageAC())
+        props.addMessage()
     }
     return (
         <div className="Main">
             <div style={{display: 'flex'}}>
                 <textarea ref={textRef}
-                          value={props.dialogsPage.newMessageTitle}
+                          value={props.newMessageTitle}
                           onChange={onChange}/>
                 <button onClick={onClick}>add post</button>
             </div>
             {
-                props.dialogsPage.messages.map((m: any) => <div key={m.id}>{m.title}</div>)
+                props.messages.map((m: any) => <div key={m.id}>{m.title}</div>)
             }
 
         </div>
     );
 }
 
+function DialogsContainer(props: any) {
+    const state = props.store.getState()
+    const updateMessageTitle = (text: any) => {
+        props.store.dispatch(updateMessageTitleAC(text))
+    }
+    const addMessage = () => {
+        props.store.dispatch(addMessageAC())
+    }
+    return <Dialogs updateMessageTitle={updateMessageTitle}
+                    addMessage={addMessage}
+                    messages={state.dialogsPage.messages}
+                    newMessageTitle={state.dialogsPage.newMessageTitle}
+    />
+}
 
