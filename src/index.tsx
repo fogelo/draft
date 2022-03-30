@@ -8,22 +8,14 @@ import {store} from './redux/redux-store';
 import {Provider} from 'react-redux';
 
 
-export const StoreContext: any = createContext(null)
-
-function renderApp() {
-    ReactDOM.render(
-        <Provider store={store}>
-            <BrowserRouter>
-                <App/>
-            </BrowserRouter>
-        </Provider>,
-        document.getElementById('root')
-    );
-}
-
-renderApp()
-
-store.subscribe(() => renderApp())
+ReactDOM.render(
+    <Provider store={store}>
+        <BrowserRouter>
+            <App/>
+        </BrowserRouter>
+    </Provider>,
+    document.getElementById('root')
+);
 
 
 // If you want to start measuring performance in your app, pass a function

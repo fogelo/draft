@@ -25,3 +25,10 @@ export const profileReducer = (state: any = initialState, action: any) => {
         }
     }
 }
+
+export const updatePostTitleAC = (postTitle: any) => {
+    return {type: 'UPDATE-POST-TITLE', postTitle}
+}
+export const addPostAC = () => {
+    return {type: 'ADD-POST'}
+}

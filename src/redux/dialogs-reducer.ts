@@ -34,3 +34,10 @@ export const dialogsReducer = (state: any = initialState, action: any) => {
         }
     }
 }
+
+export const updateMessageTitleAC = (messageTitle: any) => {
+    return {type: 'UPDATE-MESSAGE-TITLE', messageTitle}
+}
+export const addMessageAC = () => {
+    return {type: 'ADD-MESSAGE'}
+}
