@@ -1,6 +1,16 @@
 import {v1} from 'uuid';
 
-export const profileReducer = (state: any, action: any) => {
+const initialState = {
+    posts: [
+        {id: v1(), title: 'post 1'},
+        {id: v1(), title: 'post 2'},
+        {id: v1(), title: 'post 3'},
+        {id: v1(), title: 'post 4'},
+    ],
+    newPostTitle: 'hard'
+}
+
+export const profileReducer = (state: any = initialState, action: any) => {
     switch (action.type) {
         case 'UPDATE-POST-TITLE': {
             state.newPostTitle = action.postTitle

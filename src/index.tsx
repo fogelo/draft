@@ -4,14 +4,14 @@ import './index.css';
 import {App} from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
-import {store} from './redux/store';
+import {store} from './redux/redux-store';
 
 
 function renderApp(state: any) {
     ReactDOM.render(
         <BrowserRouter>
             <App state={state}
-                 dispatch={store.dispatch.bind(store)}/>
+                 dispatch={store.dispatch}/>
         </BrowserRouter>
         ,
         document.getElementById('root')
@@ -20,7 +20,7 @@ function renderApp(state: any) {
 
 renderApp(store.getState())
 
-store.subscribe(renderApp)
+store.subscribe(()=>renderApp(store.getState()))
 
 
 // If you want to start measuring performance in your app, pass a function
