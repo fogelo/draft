@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import {App} from './App';
@@ -7,19 +7,26 @@ import {BrowserRouter} from 'react-router-dom';
 import {store} from './redux/redux-store';
 
 
+export const StoreContext: any = createContext(null)
+
+const Provide = (props: any) => <StoreContext.Provider value={store}>
+    {props.children}
+</StoreContext.Provider>
+
 function renderApp() {
     ReactDOM.render(
-        <BrowserRouter>
-            <App store={store}/>
-        </BrowserRouter>
-        ,
+        <Provide>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+        </Provide>,
         document.getElementById('root')
     );
 }
 
 renderApp()
 
-store.subscribe(()=>renderApp())
+store.subscribe(() => renderApp())
 
 
 // If you want to start measuring performance in your app, pass a function

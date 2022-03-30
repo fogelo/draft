@@ -2,15 +2,15 @@ import React from 'react';
 import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
 import {addMessageAC, addPostAC, updateMessageTitleAC, updatePostTitleAC} from './redux/store';
+import {StoreContext} from './index';
 
-export function App(props: any) {
+export function App() {
     return (
         <div className="App">
             <Header/>
             <div className={'content'}>
                 <Menu/>
-                <Main store={props.store}
-                />
+                <Main/>
             </div>
         </div>
     );
@@ -35,12 +35,12 @@ function Menu() {
     );
 }
 
-function Main(props: any) {
+function Main() {
     return (
         <div className="Main">
             <Routes>
-                <Route path={'/profile'} element={<ProfileContainer store={props.store}/>}/>
-                <Route path={'/dialogs'} element={<DialogsContainer store={props.store}/>}/>
+                <Route path={'/profile'} element={<ProfileContainer/>}/>
+                <Route path={'/dialogs'} element={<DialogsContainer/>}/>
             </Routes>
         </div>
     );
@@ -74,18 +74,26 @@ function Profile(props: any) {
     );
 }
 
-function ProfileContainer(props: any) {
-    const state = props.store.getState()
-    const updatePostTitle = (text: any) => {
-        props.store.dispatch(updatePostTitleAC(text))
-    }
-    const addPost = () => {
-        props.store.dispatch(addPostAC())
-    }
-    return <Profile updatePostTitle={updatePostTitle}
-                    addPost={addPost}
-                    posts={state.profilePage.posts}
-                    newPostTitle={state.profilePage.newPostTitle}/>
+function ProfileContainer() {
+    return <StoreContext.Consumer>
+        {
+            (store: any) => {
+                const state = store.getState()
+                const updatePostTitle = (text: any) => {
+                    store.dispatch(updatePostTitleAC(text))
+                }
+                const addPost = () => {
+                    store.dispatch(addPostAC())
+                }
+                return <Profile updatePostTitle={updatePostTitle}
+                                addPost={addPost}
+                                posts={state.profilePage.posts}
+                                newPostTitle={state.profilePage.newPostTitle}/>
+
+            }
+        }
+
+    </StoreContext.Consumer>
 }
 
 function Dialogs(props: any) {
@@ -110,21 +118,27 @@ function Dialogs(props: any) {
             }
 
         </div>
-    );
+    )
 }
 
 function DialogsContainer(props: any) {
-    const state = props.store.getState()
-    const updateMessageTitle = (text: any) => {
-        props.store.dispatch(updateMessageTitleAC(text))
-    }
-    const addMessage = () => {
-        props.store.dispatch(addMessageAC())
-    }
-    return <Dialogs updateMessageTitle={updateMessageTitle}
-                    addMessage={addMessage}
-                    messages={state.dialogsPage.messages}
-                    newMessageTitle={state.dialogsPage.newMessageTitle}
-    />
+
+    return <StoreContext.Consumer>
+        {
+            (store: any) => {
+                const state = store.getState()
+                const updateMessageTitle = (text: any) => {
+                    store.dispatch(updateMessageTitleAC(text))
+                }
+                const addMessage = () => {
+                    store.dispatch(addMessageAC())
+                }
+                return <Dialogs updateMessageTitle={updateMessageTitle}
+                                addMessage={addMessage}
+                                messages={state.dialogsPage.messages}
+                                newMessageTitle={state.dialogsPage.newMessageTitle}/>
+            }
+        }
+    </StoreContext.Consumer>
 }
 
