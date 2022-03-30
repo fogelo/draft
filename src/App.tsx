@@ -3,6 +3,7 @@ import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
 import {addMessageAC, addPostAC, updateMessageTitleAC, updatePostTitleAC} from './redux/store';
 import {StoreContext} from './index';
+import {connect} from 'react-redux';
 
 export function App() {
     return (
@@ -74,27 +75,25 @@ function Profile(props: any) {
     );
 }
 
-function ProfileContainer() {
-    return <StoreContext.Consumer>
-        {
-            (store: any) => {
-                const state = store.getState()
-                const updatePostTitle = (text: any) => {
-                    store.dispatch(updatePostTitleAC(text))
-                }
-                const addPost = () => {
-                    store.dispatch(addPostAC())
-                }
-                return <Profile updatePostTitle={updatePostTitle}
-                                addPost={addPost}
-                                posts={state.profilePage.posts}
-                                newPostTitle={state.profilePage.newPostTitle}/>
-
-            }
-        }
-
-    </StoreContext.Consumer>
+function mapStateToProps(state: any) {
+    return {
+        newPostTitle: state.profilePage.newPostTitle,
+        posts: state.profilePage.posts
+    }
 }
+
+function mapDispatchToProps(dispatch: any) {
+    return {
+        updatePostTitle: (text: any) => {
+            dispatch(updatePostTitleAC(text))
+        },
+        addPost: () => {
+            dispatch(addPostAC())
+        }
+    }
+}
+
+const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 function Dialogs(props: any) {
     const textRef: any = React.createRef()
@@ -121,24 +120,23 @@ function Dialogs(props: any) {
     )
 }
 
-function DialogsContainer(props: any) {
-
-    return <StoreContext.Consumer>
-        {
-            (store: any) => {
-                const state = store.getState()
-                const updateMessageTitle = (text: any) => {
-                    store.dispatch(updateMessageTitleAC(text))
-                }
-                const addMessage = () => {
-                    store.dispatch(addMessageAC())
-                }
-                return <Dialogs updateMessageTitle={updateMessageTitle}
-                                addMessage={addMessage}
-                                messages={state.dialogsPage.messages}
-                                newMessageTitle={state.dialogsPage.newMessageTitle}/>
-            }
-        }
-    </StoreContext.Consumer>
+function mapStateToProps2(state: any) {
+    return {
+        newMessageTitle: state.dialogsPage.newMessageTitle,
+        messages: state.dialogsPage.messages
+    }
 }
+
+function mapDispatchToProps2(dispatch: any) {
+    return {
+        updateMessageTitle: (text: any) => {
+            dispatch(updateMessageTitleAC(text))
+        },
+        addMessage: () => {
+            dispatch(addMessageAC())
+        }
+    }
+}
+
+const DialogsContainer = connect(mapStateToProps2, mapDispatchToProps2)(Dialogs)
 

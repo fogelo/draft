@@ -13,17 +13,12 @@ const initialState = {
 export const profileReducer = (state: any = initialState, action: any) => {
     switch (action.type) {
         case 'UPDATE-POST-TITLE': {
-            state.newPostTitle = action.postTitle
-            return state
+            return {...state, newPostTitle: action.postTitle}
         }
         case 'ADD-POST': {
-            const newPost = {
-                id: v1(),
-                title: state.newPostTitle
-            }
-            state.posts.unshift(newPost)
-            state.newPostTitle = ''
-            return state
+            return {...state,
+                posts: [...state.posts, {id: v1(), title: state.newPostTitle}],
+                newPostTitle: ''}
         }
         default: {
             return state

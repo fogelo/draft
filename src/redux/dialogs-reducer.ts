@@ -14,8 +14,7 @@ const initialState = {
 export const dialogsReducer = (state: any = initialState, action: any) => {
     switch (action.type) {
         case 'UPDATE-MESSAGE-TITLE': {
-            state.newMessageTitle = action.messageTitle
-            return state
+            return {...state, newMessageTitle: action.messageTitle}
         }
         case 'ADD-MESSAGE': {
             const newMessage = {
@@ -24,7 +23,11 @@ export const dialogsReducer = (state: any = initialState, action: any) => {
             }
             state.messages.unshift(newMessage)
             state.newMessageTitle = ''
-            return state
+            return {
+                ...state,
+                posts: [...state.messages, {id: v1(), title: state.newMessageTitle}],
+                newMessageTitle: ''
+            }
         }
         default: {
             return state

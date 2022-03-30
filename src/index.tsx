@@ -5,21 +5,18 @@ import {App} from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
 import {store} from './redux/redux-store';
+import {Provider} from 'react-redux';
 
 
 export const StoreContext: any = createContext(null)
 
-const Provide = (props: any) => <StoreContext.Provider value={store}>
-    {props.children}
-</StoreContext.Provider>
-
 function renderApp() {
     ReactDOM.render(
-        <Provide>
+        <Provider store={store}>
             <BrowserRouter>
                 <App/>
             </BrowserRouter>
-        </Provide>,
+        </Provider>,
         document.getElementById('root')
     );
 }
