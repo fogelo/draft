@@ -9,10 +9,8 @@ export function App(props: any) {
             <div className={'content'}>
                 <Menu/>
                 <Main state={props.state}
-                      updatePostTitle={props.updatePostTitle}
-                      addPost={props.addPost}
-                      updateMessageTitle={props.updateMessageTitle}
-                      addMessage={props.addMessage}/>
+                      dispatch={props.dispatch}
+                />
             </div>
         </div>
     );
@@ -42,12 +40,10 @@ function Main(props: any) {
         <div className="Main">
             <Routes>
                 <Route path={'/profile'} element={<Profile profilePage={props.state.profilePage}
-                                                           updatePostTitle={props.updatePostTitle}
-                                                           addPost={props.addPost}
-                                                           />}/>
+                                                           dispatch={props.dispatch}
+                />}/>
                 <Route path={'/dialogs'} element={<Dialogs dialogsPage={props.state.dialogsPage}
-                                                           updateMessageTitle={props.updateMessageTitle}
-                                                           addMessage={props.addMessage}/>}/>
+                                                           dispatch={props.dispatch}/>}/>
             </Routes>
         </div>
     );
@@ -58,10 +54,10 @@ function Profile(props: any) {
     const textRef: any = React.createRef()
 
     const onChange = () => {
-        props.updatePostTitle(textRef.current.value)
+        props.dispatch({type: 'UPDATE-POST-TITLE', postTitle: textRef.current.value})
     }
     const onClick = () => {
-        props.addPost()
+        props.dispatch({type: 'ADD-POST'})
     }
     return (
         <div className="Main">
@@ -81,14 +77,14 @@ function Profile(props: any) {
     );
 }
 
-function Dialogs(props:any) {
+function Dialogs(props: any) {
     const textRef: any = React.createRef()
 
     const onChange = () => {
-        props.updateMessageTitle(textRef.current.value)
+        props.dispatch({type: 'UPDATE-MESSAGE-TITLE', postTitle: textRef.current.value})
     }
     const onClick = () => {
-        props.addMessage()
+        props.dispatch({type: 'ADD-MESSAGE'})
     }
     return (
         <div className="Main">

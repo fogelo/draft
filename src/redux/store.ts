@@ -21,31 +21,30 @@ export const store: any = {
             newMessageTitle: 'hard'
         }
     },
-    updatePostTitle(postTitle: any) {
-        this._state.profilePage.newPostTitle = postTitle
-        this._callSubscriber(this._state)
-    },
-    addPost() {
-        const newPost = {
-            id: v1(),
-            title: this._state.profilePage.newPostTitle
+    dispatch(action: any) {
+        if (action.type === 'UPDATE-POST-TITLE') {
+            this._state.profilePage.newPostTitle = action.postTitle
+            this._callSubscriber(this._state)
+        } else if (action.type === 'ADD-POST') {
+            const newPost = {
+                id: v1(),
+                title: this._state.profilePage.newPostTitle
+            }
+            this._state.profilePage.posts.unshift(newPost)
+            this._state.profilePage.newPostTitle = ''
+            this._callSubscriber(this._state)
+        } else if (action.type === 'UPDATE-MESSAGE-TITLE') {
+            this._state.dialogsPage.newMessageTitle = action.postTitle
+            this._callSubscriber(this._state)
+        } else if (action.type === 'ADD-MESSAGE') {
+            const newMessage = {
+                id: v1(),
+                title: this._state.dialogsPage.newMessageTitle
+            }
+            this._state.dialogsPage.messages.unshift(newMessage)
+            this._state.dialogsPage.newMessageTitle = ''
+            this._callSubscriber(this._state)
         }
-        this._state.profilePage.posts.unshift(newPost)
-        this._state.profilePage.newPostTitle = ''
-        this._callSubscriber(this._state)
-    },
-    updateMessageTitle(postTitle: any) {
-        this._state.dialogsPage.newMessageTitle = postTitle
-        this._callSubscriber(this._state)
-    },
-    addMessage() {
-        const newMessage = {
-            id: v1(),
-            title: this._state.dialogsPage.newMessageTitle
-        }
-        this._state.dialogsPage.messages.unshift(newMessage)
-        this._state.dialogsPage.newMessageTitle = ''
-        this._callSubscriber(this._state)
     },
     getState() {
         return this._state

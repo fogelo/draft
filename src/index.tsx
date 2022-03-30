@@ -11,10 +11,7 @@ function renderApp(state: any) {
     ReactDOM.render(
         <BrowserRouter>
             <App state={state}
-                 updatePostTitle={store.updatePostTitle.bind(store)}
-                 addPost={store.addPost.bind(store)}
-                 updateMessageTitle={store.updateMessageTitle.bind(store)}
-                 addMessage={store.addMessage.bind(store)}/>
+                 dispatch={store.dispatch.bind(store)}/>
         </BrowserRouter>
         ,
         document.getElementById('root')
