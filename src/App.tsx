@@ -1,32 +1,41 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import './App.css';
 
 
 export function App() {
     return (
         <div className="App">
-            <Clock/>
+            <EditableSpan title={'hard'} changeTitle={() => {
+            }}/>
+
         </div>
     );
 }
 
-const standartValue = (value: any) => {
-    return value < 10 ? '0' + value : value
+
+type EditableSpanPT = {
+    title: string
+    changeTitle: (title: string) => void
 }
+const EditableSpan = (props: EditableSpanPT) => {
+    const [title, setTitle] = useState(props.title)
+    const [editMode, setEditMode] = useState(false)
 
-const Clock = () => {
-    const [date, setDate] = useState(new Date())
-
-    useEffect(() => {
-        setInterval(() => {
-            setDate(new Date())
-        }, 1000)
-    }, [])
+    const activateEditMode = () => {
+        setEditMode(true)
+    }
+    const deActivateEditMode = () => {
+        setEditMode(false)
+    }
     return (
         <div>
-            {standartValue(date.getHours())}:
-            {standartValue(date.getMinutes())}:
-            {standartValue(date.getSeconds())}
+            {editMode
+                ? <input type="text" value={title}
+                         autoFocus
+                         onBlur={deActivateEditMode}
+                         onChange={(e) => setTitle(e.currentTarget.value)}/>
+                : <span onDoubleClick={activateEditMode}>{title}</span>
+            }
         </div>
     )
 }
