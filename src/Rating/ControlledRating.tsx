@@ -5,7 +5,8 @@ type ControlledRatingPT = {
     setRatingValue: (value: number) => void
 }
 
-export const ControlledRating = (props: ControlledRatingPT) => {
+export const ControlledRating = React.memo((props: ControlledRatingPT) => {
+    console.log('Rating')
     return (
         <div>
             <Star bold={0 < props.value} setValue={() => props.setRatingValue(1)}/>
@@ -15,7 +16,7 @@ export const ControlledRating = (props: ControlledRatingPT) => {
             <Star bold={4 < props.value} setValue={() => props.setRatingValue(5)}/>
         </div>
     )
-}
+})
 
 type StarPt = {
     bold: boolean

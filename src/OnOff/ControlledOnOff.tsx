@@ -1,9 +1,11 @@
+import React from 'react';
+
 type ControlledOnOffPT = {
     on: boolean
     setOn: (on: boolean) => void
 }
-export const ControlledOnOff = (props: ControlledOnOffPT) => {
-
+export const ControlledOnOff = React.memo((props: ControlledOnOffPT) => {
+    console.log('OnOff')
     const styleOn = {
         backgroundColor: 'green'
     }
@@ -25,4 +27,5 @@ export const ControlledOnOff = (props: ControlledOnOffPT) => {
             <div style={styleIndicate}></div>
         </div>
     )
-}
+})
+
