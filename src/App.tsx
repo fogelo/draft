@@ -3,9 +3,23 @@ import './App.css';
 import {v1} from 'uuid';
 
 
+type TaskType = {
+    id: string
+    title: string
+    isDone: boolean
+}
+
+type TodolistType = {
+    id: string
+    title: string
+    tasks: TaskType[]
+}
+
+export type StateType = TodolistType[]
+
 export function App() {
 
-    const [todolists, setTodolists] = useState([
+    const [todolists, setTodolists] = useState<StateType>([
         {
             id: v1(), title: 'what to learn', tasks: [
                 {id: v1(), title: 'html', isDone: true},
@@ -92,18 +106,12 @@ export function App() {
                                            changeTodolistTitle={changeTodolistTitle}
                                            removeTodolist={removeTodolist}
                                            tasks={tl.tasks}
+                                           changeTaskTitle={changeTaskTitle}
                                            addTask={addTask}
                                            changeTaskStatus={changeTaskStatus}
                                            removeTask={removeTask}/>)}
         </div>
     );
-}
-
-
-type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
 }
 
 type TodolistPT = {
@@ -112,6 +120,7 @@ type TodolistPT = {
     changeTodolistTitle: (todolistId: string, title: string) => void
     removeTodolist: (todolistId: string) => void
     tasks: TaskType[]
+    changeTaskTitle: (todolistId: string, taskId: string, title: string) => void
     addTask: (todolistId: string, title: string) => void
     changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
     removeTask: (todolistId: string, taskId: string) => void
@@ -140,6 +149,9 @@ const Todolist = (props: TodolistPT) => {
                 const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
                     props.changeTaskStatus(props.todolistId, t.id, e.currentTarget.checked)
                 }
+                const changeTaskTitle = (title: string) => {
+                    props.changeTaskTitle(props.todolistId, t.id, title)
+                }
                 const removeTask = () => {
                     props.removeTask(props.todolistId, t.id)
                 }
@@ -149,7 +161,7 @@ const Todolist = (props: TodolistPT) => {
                         <input checked={t.isDone}
                                onChange={changeTaskStatus}
                                type="checkbox"/>
-                        {t.title}
+                        <EditableSpan title={t.title} changeTitle={changeTaskTitle}/>
                     </div>
                 )
             })}
