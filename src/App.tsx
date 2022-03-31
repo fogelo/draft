@@ -8,6 +8,8 @@ import {
     removeTodolistAC,
     todolistsReducer
 } from './redux/todolists-reducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootStateType} from './redux/store';
 
 
 type TaskType = {
@@ -25,21 +27,25 @@ type TodolistType = {
 export type StateType = TodolistType[]
 
 export function App() {
-    const [state, dispatch] = useReducer(todolistsReducer, [
-        {
-            id: v1(), title: 'what to learn', tasks: [
-                {id: v1(), title: 'html', isDone: true},
-                {id: v1(), title: 'css', isDone: true},
-                {id: v1(), title: 'react', isDone: true},
-                {id: v1(), title: 'redux', isDone: false},]
-        },
-        {
-            id: v1(), title: 'what to buy', tasks: [
-                {id: v1(), title: 'milk', isDone: true},
-                {id: v1(), title: 'meat', isDone: true},
-                {id: v1(), title: 'egs', isDone: false},]
-        },
-    ])
+    // const [state, dispatch] = useReducer(todolistsReducer, [
+    //     {
+    //         id: v1(), title: 'what to learn', tasks: [
+    //             {id: v1(), title: 'html', isDone: true},
+    //             {id: v1(), title: 'css', isDone: true},
+    //             {id: v1(), title: 'react', isDone: true},
+    //             {id: v1(), title: 'redux', isDone: false},]
+    //     },
+    //     {
+    //         id: v1(), title: 'what to buy', tasks: [
+    //             {id: v1(), title: 'milk', isDone: true},
+    //             {id: v1(), title: 'meat', isDone: true},
+    //             {id: v1(), title: 'egs', isDone: false},]
+    //     },
+    // ])
+
+    const state = useSelector<RootStateType, StateType>((state) => state.todolists)
+    const dispatch = useDispatch()
+
 
     const addTodolist = (title: string) => {
         const action = addTodolistAC(title)
@@ -78,15 +84,15 @@ export function App() {
         <div className="App">
             <AddItemForm addItem={addTodolist}/>
             {state.map(tl => <Todolist key={tl.id}
-                                           todolistTitle={tl.title}
-                                           todolistId={tl.id}
-                                           changeTodolistTitle={changeTodolistTitle}
-                                           removeTodolist={removeTodolist}
-                                           tasks={tl.tasks}
-                                           changeTaskTitle={changeTaskTitle}
-                                           addTask={addTask}
-                                           changeTaskStatus={changeTaskStatus}
-                                           removeTask={removeTask}/>)}
+                                       todolistTitle={tl.title}
+                                       todolistId={tl.id}
+                                       changeTodolistTitle={changeTodolistTitle}
+                                       removeTodolist={removeTodolist}
+                                       tasks={tl.tasks}
+                                       changeTaskTitle={changeTaskTitle}
+                                       addTask={addTask}
+                                       changeTaskStatus={changeTaskStatus}
+                                       removeTask={removeTask}/>)}
         </div>
     );
 }

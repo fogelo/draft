@@ -72,7 +72,23 @@ export const removeTaskAC = (todolistId: string, taskId: string,): RemoveTaskAT 
     return {type: 'REMOVE-TASK', todolistId, taskId}
 }
 
-export const todolistsReducer = (state: StateType, action: ActionType): StateType => {
+const initialState = [
+    {
+        id: v1(), title: 'what to learn', tasks: [
+            {id: v1(), title: 'html', isDone: true},
+            {id: v1(), title: 'css', isDone: true},
+            {id: v1(), title: 'react', isDone: true},
+            {id: v1(), title: 'redux', isDone: false},]
+    },
+    {
+        id: v1(), title: 'what to buy', tasks: [
+            {id: v1(), title: 'milk', isDone: true},
+            {id: v1(), title: 'meat', isDone: true},
+            {id: v1(), title: 'egs', isDone: false},]
+    },
+]
+
+export const todolistsReducer = (state: StateType = initialState, action: ActionType): StateType => {
     switch (action.type) {
         case 'ADD-TODOLIST': {
             const newTodolist = {
