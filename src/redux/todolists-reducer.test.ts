@@ -3,7 +3,7 @@ import {
     addTaskAC,
     addTodolistAC, changeTaskStatusAC,
     changeTaskTitleAC,
-    changeTodolistTitleAC, RemoveTaskAC,
+    changeTodolistTitleAC, removeTaskAC,
     removeTodolistAC,
     todolistsReducer
 } from './todolists-reducer';
@@ -160,7 +160,7 @@ test('task should be removed', () => {
         },
     ]
 
-    const action = RemoveTaskAC('todolistId1', '1')
+    const action = removeTaskAC('todolistId1', '1')
     const endState = todolistsReducer(startState, action)
 
     expect(endState[0].tasks.length).toBe(3)

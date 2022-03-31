@@ -68,7 +68,7 @@ export const changeTaskTitleAC = (todolistId: string, taskId: string, title: str
 export const changeTaskStatusAC = (todolistId: string, taskId: string, isDone: boolean): ChangeTaskStatusAT => {
     return {type: 'CHANGE-TASK-STATUS', todolistId, taskId, isDone}
 }
-export const RemoveTaskAC = (todolistId: string, taskId: string,): RemoveTaskAT => {
+export const removeTaskAC = (todolistId: string, taskId: string,): RemoveTaskAT => {
     return {type: 'REMOVE-TASK', todolistId, taskId}
 }
 
