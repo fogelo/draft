@@ -1,12 +1,10 @@
-import React, {ChangeEvent, useReducer, useState} from 'react';
+import React, {ChangeEvent, useCallback, useState} from 'react';
 import './App.css';
-import {v1} from 'uuid';
 import {
     addTaskAC,
     addTodolistAC, changeTaskStatusAC, changeTaskTitleAC,
     changeTodolistTitleAC, removeTaskAC,
     removeTodolistAC,
-    todolistsReducer
 } from './redux/todolists-reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootStateType} from './redux/store';
@@ -27,58 +25,42 @@ type TodolistType = {
 export type StateType = TodolistType[]
 
 export function App() {
-    // const [state, dispatch] = useReducer(todolistsReducer, [
-    //     {
-    //         id: v1(), title: 'what to learn', tasks: [
-    //             {id: v1(), title: 'html', isDone: true},
-    //             {id: v1(), title: 'css', isDone: true},
-    //             {id: v1(), title: 'react', isDone: true},
-    //             {id: v1(), title: 'redux', isDone: false},]
-    //     },
-    //     {
-    //         id: v1(), title: 'what to buy', tasks: [
-    //             {id: v1(), title: 'milk', isDone: true},
-    //             {id: v1(), title: 'meat', isDone: true},
-    //             {id: v1(), title: 'egs', isDone: false},]
-    //     },
-    // ])
-
     const state = useSelector<RootStateType, StateType>((state) => state.todolists)
     const dispatch = useDispatch()
 
 
-    const addTodolist = (title: string) => {
+    const addTodolist = useCallback((title: string) => {
         const action = addTodolistAC(title)
         dispatch(action)
-    }
-    const changeTodolistTitle = (todolistId: string, title: string) => {
+    }, [dispatch])
+    const changeTodolistTitle = useCallback((todolistId: string, title: string) => {
         const action = changeTodolistTitleAC(todolistId, title)
         dispatch(action)
-    }
+    }, [dispatch])
 
-    const removeTodolist = (todolistId: string) => {
+    const removeTodolist = useCallback((todolistId: string) => {
         const action = removeTodolistAC(todolistId)
         dispatch(action)
-    }
+    }, [dispatch])
 
-    const addTask = (todolistId: string, title: string) => {
+    const addTask = useCallback((todolistId: string, title: string) => {
         const action = addTaskAC(todolistId, title)
         dispatch(action)
-    }
+    }, [dispatch])
 
-    const changeTaskTitle = (todolistId: string, taskId: string, title: string) => {
+    const changeTaskTitle = useCallback((todolistId: string, taskId: string, title: string) => {
         const action = changeTaskTitleAC(todolistId, taskId, title)
         dispatch(action)
-    }
+    }, [dispatch])
 
-    const changeTaskStatus = (todolistId: string, taskId: string, isDone: boolean) => {
+    const changeTaskStatus = useCallback((todolistId: string, taskId: string, isDone: boolean) => {
         const action = changeTaskStatusAC(todolistId, taskId, isDone)
         dispatch(action)
-    }
-    const removeTask = (todolistId: string, taskId: string) => {
+    }, [dispatch])
+    const removeTask = useCallback((todolistId: string, taskId: string) => {
         const action = removeTaskAC(todolistId, taskId)
         dispatch(action)
-    }
+    }, [dispatch])
 
     return (
         <div className="App">
@@ -110,12 +92,13 @@ type TodolistPT = {
 }
 
 const Todolist = (props: TodolistPT) => {
-    const changeTodolistTitle = (title: string) => {
+    console.log('Todolist')
+    const changeTodolistTitle = useCallback((title: string) => {
         props.changeTodolistTitle(props.todolistId, title)
-    }
-    const addTask = (title: string) => {
+    }, [props.changeTodolistTitle, props.todolistId])
+    const addTask = useCallback((title: string) => {
         props.addTask(props.todolistId, title)
-    }
+    }, [props.addTask, props.todolistId])
 
     const removeTodolist = () => {
         props.removeTodolist(props.todolistId)
@@ -128,26 +111,12 @@ const Todolist = (props: TodolistPT) => {
                 <button onClick={removeTodolist}>x</button>
             </h3>
             <AddItemForm addItem={addTask}/>
-            {props.tasks.map(t => {
-                const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-                    props.changeTaskStatus(props.todolistId, t.id, e.currentTarget.checked)
-                }
-                const changeTaskTitle = (title: string) => {
-                    props.changeTaskTitle(props.todolistId, t.id, title)
-                }
-                const removeTask = () => {
-                    props.removeTask(props.todolistId, t.id)
-                }
-                return (
-                    <div key={t.id}>
-                        <button onClick={removeTask}>x</button>
-                        <input checked={t.isDone}
-                               onChange={changeTaskStatus}
-                               type="checkbox"/>
-                        <EditableSpan title={t.title} changeTitle={changeTaskTitle}/>
-                    </div>
-                )
-            })}
+            {props.tasks.map(t => <Task changeTaskStatus={props.changeTaskStatus}
+                                        changeTaskTitle={props.changeTaskTitle}
+                                        removeTask={props.removeTask}
+                                        todolistId={props.todolistId}
+                                        task={t}/>
+            )}
         </div>
     )
 }
@@ -157,7 +126,8 @@ type EditableSpanPT = {
     title: string
     changeTitle: (title: string) => void
 }
-const EditableSpan = (props: EditableSpanPT) => {
+const EditableSpan = React.memo((props: EditableSpanPT) => {
+    console.log('EditableSpan')
     const [title, setTitle] = useState(props.title)
     const [editMode, setEditMode] = useState(false)
 
@@ -180,13 +150,14 @@ const EditableSpan = (props: EditableSpanPT) => {
             }
         </div>
     )
-}
+})
 
 type AddItemFormPT = {
     addItem: (title: string) => void
 }
 
-const AddItemForm = (props: AddItemFormPT) => {
+const AddItemForm = React.memo((props: AddItemFormPT) => {
+    console.log('AddItemForm')
     const [title, setTitle] = useState('')
     const [error, setError] = useState(false)
 
@@ -223,4 +194,33 @@ const AddItemForm = (props: AddItemFormPT) => {
             <button onClick={addItem}>+</button>
         </div>
     )
+})
+
+type TaskPropsType = {
+    changeTaskStatus: (todolistId: string, taskId: string, isDone: boolean) => void
+    changeTaskTitle: (todolistId: string, taskId: string, title: string) => void
+    removeTask: (todolistId: string, taskId: string) => void
+    todolistId: string
+    task: TaskType
 }
+
+const Task = React.memo((props: TaskPropsType) => {
+    const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
+        props.changeTaskStatus(props.todolistId, props.task.id, e.currentTarget.checked)
+    }
+    const changeTaskTitle = useCallback((title: string) => {
+        props.changeTaskTitle(props.todolistId, props.task.id, title)
+    }, [props.changeTaskTitle, props.todolistId, props.task.id])
+    const removeTask = () => {
+        props.removeTask(props.todolistId, props.task.id)
+    }
+    return (
+        <div key={props.task.id}>
+            <button onClick={removeTask}>x</button>
+            <input checked={props.task.isDone}
+                   onChange={changeTaskStatus}
+                   type="checkbox"/>
+            <EditableSpan title={props.task.title} changeTitle={changeTaskTitle}/>
+        </div>
+    )
+})

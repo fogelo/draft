@@ -88,7 +88,7 @@ const initialState = [
     },
 ]
 
-export const todolistsReducer = (state: StateType = initialState, action: ActionType): StateType => {
+export const todolistsReducer = (state: StateType = [], action: ActionType): StateType => {
     switch (action.type) {
         case 'ADD-TODOLIST': {
             const newTodolist = {
