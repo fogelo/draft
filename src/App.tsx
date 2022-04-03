@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
 import Profile from './Profile';
+import Users from './Users';
 
 
 export function App() {
@@ -60,15 +61,6 @@ export function Dialogs() {
                     add post
                 </button>
             </div>
-        </div>
-    );
-}
-
-export function Users() {
-
-    return (
-        <div className="Users">
-            Users
         </div>
     );
 }
