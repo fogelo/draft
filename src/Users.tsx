@@ -11,11 +11,12 @@ import {
 import axios from 'axios';
 import {Preloader} from './common/Preloader';
 import {NavLink} from 'react-router-dom';
+import {usersAPI} from './api/api';
 
 class Users extends React.Component<any> {
     componentDidMount() {
         this.props.setIsFetching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=1&count=${this.props.usersCount}`)
+        usersAPI.getUsers(this.props.usersCount, this.props.currentPage)
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.setTotalUsersCount(response.data.totalCount)
@@ -25,7 +26,7 @@ class Users extends React.Component<any> {
 
     onPageChanged(currentPage: any) {
         this.props.setIsFetching(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currentPage}&count=${this.props.usersCount}`)
+        usersAPI.getUsers(this.props.usersCount, currentPage)
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.toggleCurrentPage(currentPage)
