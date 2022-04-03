@@ -5,7 +5,7 @@ import {
     setIsFetchingAC,
     setTotalUsersCountAC,
     setUsersAC,
-    toggleCurrentPageAC,
+    toggleCurrentPageAC, toggleFollowingInProgressAC,
     unfollowAC
 } from './redux/users-reducer';
 import axios from 'axios';
@@ -53,20 +53,25 @@ class Users extends React.Component<any> {
                             </NavLink>
                             <div>status: {u.status ? u.status : 'нет статуса'}</div>
                             {u.followed
-                                ? <button onClick={() => {
-                                    axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
-                                        withCredentials: true,
-                                        headers: {
-                                            'API-KEY': 'e1a10142-bc6b-4db7-85fc-aa063d946841'
-                                        }
-                                    })
-                                        .then((response: any) => {
-                                            if (response.data.resultCode === 0) {
-                                                this.props.unfollow(u.id)
-                                            }
-                                        })
-                                }}>unfollow</button>
-                                : <button onClick={() => {
+                                ? <button disabled={this.props.followingInProgress.some((id: any) => id === u.id)}
+                                          onClick={() => {
+                                              this.props.toggleFollowingInProgress(u.id)
+                                              axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
+                                                  withCredentials: true,
+                                                  headers: {
+                                                      'API-KEY': 'e1a10142-bc6b-4db7-85fc-aa063d946841'
+                                                  }
+                                              })
+                                                  .then((response: any) => {
+                                                      if (response.data.resultCode === 0) {
+                                                          this.props.unfollow(u.id)
+                                                          this.props.toggleFollowingInProgress(u.id)
+                                                      }
+                                                  })
+                                          }}>unfollow</button>
+                                : <button disabled={this.props.followingInProgress.some((id: any) => id === u.id)}
+                                          onClick={() => {
+                                    this.props.toggleFollowingInProgress(u.id)
                                     axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {}, {
                                         withCredentials: true,
                                         headers: {
@@ -76,6 +81,7 @@ class Users extends React.Component<any> {
                                         .then(response => {
                                             if (response.data.resultCode === 0) {
                                                 this.props.follow(u.id)
+                                                this.props.toggleFollowingInProgress(u.id)
                                             }
                                         })
                                 }}>follow</button>
@@ -95,8 +101,8 @@ const mapStateToProps = (state: any) => {
         totalUsersCount: state.usersPage.totalUsersCount,
         usersCount: state.usersPage.usersCount,
         currentPage: state.usersPage.currentPage,
-        isFetching: state.usersPage.isFetching
-
+        isFetching: state.usersPage.isFetching,
+        followingInProgress: state.usersPage.followingInProgress
     }
 }
 
@@ -119,6 +125,9 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         setIsFetching: (isFetching: any) => {
             dispatch(setIsFetchingAC(isFetching))
+        },
+        toggleFollowingInProgress: (id: any) => {
+            dispatch(toggleFollowingInProgressAC(id))
         }
     }
 }
