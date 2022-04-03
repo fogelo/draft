@@ -10,6 +10,7 @@ import {
 } from './redux/users-reducer';
 import axios from 'axios';
 import {Preloader} from './common/Preloader';
+import {NavLink} from 'react-router-dom';
 
 class Users extends React.Component<any> {
     componentDidMount() {
@@ -46,7 +47,9 @@ class Users extends React.Component<any> {
                     return (
                         <div key={u.id} style={{padding: '10px 0'}}>
                             <div>name: {u.name}</div>
-                            <div>photo: <img src={u.photos.small} alt="нет фото"/></div>
+                            <NavLink to={`/profile/${u.id}`}>
+                                <div>photo: <img src={u.photos.small} alt="нет фото"/></div>
+                            </NavLink>
                             <div>status: {u.status ? u.status : 'нет статуса'}</div>
                             {u.followed
                                 ? <button onClick={() => this.props.unfollow(u.id)}>unfollow</button>

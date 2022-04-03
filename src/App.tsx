@@ -44,6 +44,7 @@ export function Main() {
         <div className="Main">
             <Routes>
                 <Route path={'/profile'} element={<Profile/>}/>
+                <Route path={'/profile/:id'} element={<Profile/>}/>
                 <Route path={'/dialogs'} element={<Dialogs/>}/>
                 <Route path={'/users'} element={<Users/>}/>
             </Routes>

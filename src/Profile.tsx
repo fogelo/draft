@@ -1,37 +1,61 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addNewPostAC, setNewPostTitleAC} from './redux/profile-reducer';
+import {addNewPostAC, setNewPostTitleAC, setProfileAC} from './redux/profile-reducer';
+import {ProfileInfo} from './ProfileInfo';
+import axios from 'axios';
+import {useMatch} from 'react-router-dom';
 
-function Profile(props: any) {
-    const textRef: any = React.createRef()
-    const updatePostTitle = () => {
-        props.setNewPostTitle(textRef.current.value)
+
+const ProfileHOC = (props: any) => {
+    const match: any = useMatch('profile/:id')
+    console.log(match)
+    if (match) {
+        return <Profile {...props} userId={match.params.id}/>
+    } else {
+        return <Profile {...props} userId={'2'}/>
     }
-    const addPost = () => {
-        props.addNewPost()
+}
+
+class Profile extends React.Component<any> {
+    componentDidMount() {
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.userId}`)
+            .then(response => {
+                this.props.setProfile(response.data)
+            })
     }
-    return (
-        <div className="Profile">
-            <div>ava+description</div>
-            <div style={{display: 'flex'}}>
-                <textarea value={props.newPostTitle}
+
+    render() {
+        const textRef: any = React.createRef()
+        const updatePostTitle = () => {
+            this.props.setNewPostTitle(textRef.current.value)
+        }
+        const addPost = () => {
+            this.props.addNewPost()
+        }
+        return (
+            <div className="Profile">
+                <ProfileInfo profile={this.props.profile}/>
+                <div style={{display: 'flex'}}>
+                <textarea value={this.props.newPostTitle}
                           onChange={updatePostTitle}
                           ref={textRef}/>
-                <button onClick={addPost}>
-                    add post
-                </button>
+                    <button onClick={addPost}>
+                        add post
+                    </button>
+                </div>
+                <h2>My posts</h2>
+                {this.props.posts.map((p: any) => <div>{p.title}</div>)}
             </div>
-            <h2>My posts</h2>
-            {props.posts.map((p: any) => <div>{p.title}</div>)}
-        </div>
-    );
+        );
+    }
 }
 
 
 const mapStateToProps = (state: any) => {
     return {
         newPostTitle: state.profilePage.newPostTitle,
-        posts: state.profilePage.posts
+        posts: state.profilePage.posts,
+        profile: state.profilePage.profile
     }
 }
 const mapDispatchToProps = (dispatch: any) => {
@@ -41,7 +65,11 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         addNewPost: () => {
             dispatch(addNewPostAC())
+        },
+        setProfile: (profile: any) => {
+            dispatch(setProfileAC(profile))
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileHOC)
+
