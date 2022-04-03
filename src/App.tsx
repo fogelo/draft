@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
-import {NavLink, Routes, Route} from 'react-router-dom';
+import {NavLink, Route, Routes} from 'react-router-dom';
+import {Profile} from './Profile';
 
 
 export function App() {
@@ -49,20 +50,16 @@ export function Main() {
     );
 }
 
-export function Profile() {
-
-    return (
-        <div className="Profile">
-            Profile
-        </div>
-    );
-}
-
 export function Dialogs() {
 
     return (
         <div className="Dialogs">
-            Dialogs
+            <div style={{display: 'flex'}}>
+                <textarea/>
+                <button>
+                    add post
+                </button>
+            </div>
         </div>
     );
 }
