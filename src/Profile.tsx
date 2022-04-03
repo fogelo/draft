@@ -8,7 +8,6 @@ import {useMatch} from 'react-router-dom';
 
 const ProfileHOC = (props: any) => {
     const match: any = useMatch('profile/:id')
-    console.log(match)
     if (match) {
         return <Profile {...props} userId={match.params.id}/>
     } else {

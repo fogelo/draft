@@ -3,6 +3,7 @@ import './App.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
 import Profile from './Profile';
 import Users from './Users';
+import Header from './Header';
 
 
 export function App() {
@@ -14,15 +15,6 @@ export function App() {
                 <Menu/>
                 <Main/>
             </div>
-        </div>
-    );
-}
-
-export function Header() {
-
-    return (
-        <div className="Header">
-            header
         </div>
     );
 }
@@ -47,6 +39,7 @@ export function Main() {
                 <Route path={'/profile/:id'} element={<Profile/>}/>
                 <Route path={'/dialogs'} element={<Dialogs/>}/>
                 <Route path={'/users'} element={<Users/>}/>
+                <Route path={'/login'} element={<div>login</div>}/>
             </Routes>
         </div>
     );
