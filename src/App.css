@@ -1,3 +1,22 @@
 .App {
     padding: 10px;
 }
+
+
+.content {
+    display: flex;
+}
+
+.Header {
+    background-color: aqua;
+}
+
+.Menu {
+    background-color: aliceblue;
+    flex: 1 1 20%;
+}
+
+.Main {
+    background-color: antiquewhite;
+    flex: 1 1 80%;
+}
