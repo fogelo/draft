@@ -52,8 +52,32 @@ class Users extends React.Component<any> {
                             </NavLink>
                             <div>status: {u.status ? u.status : 'нет статуса'}</div>
                             {u.followed
-                                ? <button onClick={() => this.props.unfollow(u.id)}>unfollow</button>
-                                : <button onClick={() => this.props.follow(u.id)}>follow</button>
+                                ? <button onClick={() => {
+                                    axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
+                                        withCredentials: true,
+                                        headers: {
+                                            'API-KEY': 'e1a10142-bc6b-4db7-85fc-aa063d946841'
+                                        }
+                                    })
+                                        .then((response: any) => {
+                                            if (response.data.resultCode === 0) {
+                                                this.props.unfollow(u.id)
+                                            }
+                                        })
+                                }}>unfollow</button>
+                                : <button onClick={() => {
+                                    axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {}, {
+                                        withCredentials: true,
+                                        headers: {
+                                            'API-KEY': 'e1a10142-bc6b-4db7-85fc-aa063d946841'
+                                        }
+                                    })
+                                        .then(response => {
+                                            if (response.data.resultCode === 0) {
+                                                this.props.follow(u.id)
+                                            }
+                                        })
+                                }}>follow</button>
                             }
                         </div>
                     )
