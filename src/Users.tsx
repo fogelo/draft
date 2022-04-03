@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {setUsersAC} from './redux/users-reducer';
+import {followAC, setUsersAC, unfollowAC} from './redux/users-reducer';
 import axios from 'axios';
 
 class Users extends React.Component<any> {
@@ -20,6 +20,10 @@ class Users extends React.Component<any> {
                             <div>name: {u.name}</div>
                             <div>photo: <img src={u.photos.small} alt="нет фото"/></div>
                             <div>status: {u.status ? u.status : 'нет статуса'}</div>
+                            {u.followed
+                                ? <button onClick={() => this.props.unfollow(u.id)}>unfollow</button>
+                                : <button onClick={() => this.props.follow(u.id)}>follow</button>
+                            }
                         </div>
                     )
                 })}
@@ -39,6 +43,12 @@ const mapDispatchToProps = (dispatch: any) => {
     return {
         setUsers: (users: any) => {
             dispatch(setUsersAC(users))
+        },
+        follow: (userId: any) => {
+            dispatch(followAC(userId))
+        },
+        unfollow: (userId: any) => {
+            dispatch(unfollowAC(userId))
         }
     }
 }
