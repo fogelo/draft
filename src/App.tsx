@@ -3,14 +3,14 @@ import './App.css';
 import {Main} from './components/Main/Main';
 import {NavLink} from 'react-router-dom';
 
-export function App() {
+export function App(props: any) {
 
     return (
         <div className="App">
             <Header/>
             <div className={'content'}>
                 <Menu/>
-                <Main/>
+                <Main {...props}/>
             </div>
         </div>
     );
