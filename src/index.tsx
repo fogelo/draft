@@ -7,11 +7,15 @@ import {BrowserRouter} from 'react-router-dom';
 import {store} from './components/redux/redux-store';
 
 
+export const StoreContext = React.createContext(null)
+
 function renderApp() {
     ReactDOM.render(
-        <BrowserRouter>
-            <App state={store.getState()} dispatch={store.dispatch}/>
-        </BrowserRouter>,
+        <StoreContext.Provider value={store}>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+        </StoreContext.Provider>,
         document.getElementById('root')
     );
 }

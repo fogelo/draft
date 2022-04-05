@@ -9,7 +9,7 @@ export function App(props: any) {
             <Header/>
             <div className={'content'}>
                 <Menu/>
-                <Main {...props}/>
+                <Main/>
             </div>
         </div>
     );

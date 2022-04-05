@@ -5,4 +5,4 @@ export const rootState = combineReducers({
     profilePage: profileReducer
 })
 
-export const store = createStore(rootState)
+export const store: any = createStore(rootState)
