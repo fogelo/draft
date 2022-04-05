@@ -1,0 +1,21 @@
+.App {
+
+}
+
+.Header {
+    background-color: antiquewhite;
+}
+
+.content {
+    display: flex;
+}
+
+.Menu {
+    flex: 1 1 20%;
+    background-color: #abc5ff;
+}
+
+.Main {
+    flex: 1 1 80%;
+    background-color: khaki;
+}
