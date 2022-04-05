@@ -3,16 +3,19 @@ import './App.css';
 import {Main} from './components/Main/Main';
 import {NavLink} from 'react-router-dom';
 
-export function App(props: any) {
-    return (
-        <div className="App">
-            <Header/>
-            <div className={'content'}>
-                <Menu/>
-                <Main/>
+export class App extends React.Component<any> {
+    render() {
+        console.log('app')
+        return (
+            <div className="App">
+                <Header/>
+                <div className={'content'}>
+                    <Menu/>
+                    <Main/>
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
 export function Header() {
