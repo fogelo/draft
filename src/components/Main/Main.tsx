@@ -1,11 +1,9 @@
 import React, {ChangeEvent} from 'react';
-import {
-    Routes,
-    Route,
-} from 'react-router-dom';
+import {Route, Routes,} from 'react-router-dom';
 import {v1} from 'uuid';
 import {addPostAC, updateNewPostTitleAC} from '../redux/profile-reducer';
 import {StoreContext} from '../../index';
+import {Users} from './Users';
 
 export function Main(props: any) {
     return (
@@ -21,33 +19,54 @@ export function Main(props: any) {
 }
 
 
-function ProfileContainer(props: any) {
-
-    return <StoreContext.Consumer>
-        {
-            (store: any) => {
-                const posts = store.getState().profilePage.posts
-                const newPostTitle = store.getState().profilePage.newPostTitle
-                const dispatch = store.dispatch
-
-                return <Profile posts={posts}
-                                newPostTitle={newPostTitle}
-                                dispatch={dispatch}
-                />
-            }
+const connect = (mapStateToProps: any, mapDispatchToProps: any) => {
+    return (Component: any) => {
+        const ContainerComponent = () => {
+            return <StoreContext.Consumer>
+                {
+                    (store: any) => {
+                        const state = store.getState()
+                        const dispatch = store.dispatch
+                        const date = {...mapStateToProps(state), ...mapDispatchToProps(dispatch)}
+                        return <Component {...date}/>
+                    }
+                }
+            </StoreContext.Consumer>
         }
-    </StoreContext.Consumer>
+        return ContainerComponent
+    }
 }
+
+
+const mapStateToProps = (state: any) => {
+    return {
+        posts: state.profilePage.posts,
+        newPostTitle: state.profilePage.newPostTitle
+
+    }
+}
+const mapDispatchToProps = (dispatch: any) => {
+    return {
+        updatePostTitle: (newPostTile: any) => {
+            dispatch(updateNewPostTitleAC(newPostTile))
+        },
+        addPost: () => {
+            dispatch(addPostAC())
+        }
+    }
+}
+
+const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(Profile)
 
 
 export function Profile(props: any) {
 
     const onTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        props.dispatch(updateNewPostTitleAC(e.currentTarget.value))
+        props.updatePostTitle(e.currentTarget.value)
     }
 
     const onAddPostClick = () => {
-        props.dispatch(addPostAC())
+        props.addPost()
     }
     return (
         <div className="Profile">
@@ -57,15 +76,6 @@ export function Profile(props: any) {
                 <button onClick={onAddPostClick}>add post</button>
             </div>
             {props.posts.map((p: any) => <div key={v1()}>{p.title}</div>)}
-        </div>
-    );
-}
-
-export function Users() {
-
-    return (
-        <div className="Users">
-            Users
         </div>
     );
 }

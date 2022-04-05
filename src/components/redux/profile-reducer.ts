@@ -16,7 +16,7 @@ export const profileReducer = (state: any = initState, action: any) => {
         case 'ADD-POST': {
             const newPost = {
                 id: v1(),
-                title: state.newPostTitle
+                title: 'sss'
             }
 
             return {
@@ -33,3 +33,5 @@ export const profileReducer = (state: any = initState, action: any) => {
 
 export const updateNewPostTitleAC = (newTitle: any) => ({type: 'UPDATE-NEW-POST-TITLE', newTitle})
 export const addPostAC = () => ({type: 'ADD-POST'})
+
+
