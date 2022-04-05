@@ -4,6 +4,7 @@ import {
     Route,
 } from 'react-router-dom';
 import {v1} from 'uuid';
+import {addPostAC, updateNewPostTitleAC} from '../redux/profile-reducer';
 
 export function Main(props: any) {
     return (
@@ -23,11 +24,11 @@ export function Main(props: any) {
 export function Profile(props: any) {
 
     const onTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        props.dispatch({type: 'UPDATE-NEW-POST-TITLE', newTitle: e.currentTarget.value})
+        props.dispatch(updateNewPostTitleAC(e.currentTarget.value))
     }
 
     const onAddPostClick = () => {
-        props.dispatch({type: 'ADD-POST'})
+        props.dispatch(addPostAC())
     }
     return (
         <div className="Profile">

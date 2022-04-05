@@ -1,4 +1,5 @@
 import {v1} from 'uuid';
+import {profileReducer} from './profile-reducer';
 
 export const store = {
     _state: {
@@ -15,23 +16,13 @@ export const store = {
     },
 
     dispatch(action: any) {
-        if (action.type === 'UPDATE-NEW-POST-TITLE') {
-            this._state.profilePage.newPostTitle = action.newTitle
-            this._callSubscribe()
-        } else if (action.type === 'ADD-POST') {
-            const newPost = {
-                id: v1(),
-                title: this._state.profilePage.newPostTitle
-            }
-            this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
-            this._state.profilePage.newPostTitle = ''
-            this._callSubscribe()
-        }
+        this._state.profilePage = profileReducer(this._state.profilePage, action)
+        this._callSubscribe()
     },
     _callSubscribe() {
     },
     subscribe(observer: any) {
         this._callSubscribe = observer
     }
-
 }
+
