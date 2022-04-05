@@ -1,10 +1,25 @@
 import React from 'react';
+import {connect} from 'react-redux';
 
-export function Users() {
+const mapStateToProps = (state: any) => {
+    return {
+        users: state.usersPage.users
+    }
+}
+const mapDispatchToProps = (dispatch: any) => {
+    return {}
+}
+
+
+export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(Users)
+
+export function Users(props: any) {
 
     return (
         <div className="Users">
-            Users
+            {props.users.map((u: any) => <div key={u.id}>
+                <div>{u.name}</div>
+            </div>)}
         </div>
     );
 }
