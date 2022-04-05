@@ -10,9 +10,7 @@ import {store} from './components/redux/store';
 function renderApp() {
     ReactDOM.render(
         <BrowserRouter>
-            <App state={store.getState()}
-                 updateNewPostTitle={store.updateNewPostTitle.bind(store)}
-                 addPost={store.addPost.bind(store)}/>
+            <App state={store.getState()} dispatch={store.dispatch.bind(store)}/>
         </BrowserRouter>,
         document.getElementById('root')
     );

@@ -12,8 +12,7 @@ export function Main(props: any) {
                 <Route path={'/'} element={<Profile/>}/>
                 <Route path={'/profile'} element={<Profile posts={props.state.profilePage.posts}
                                                            newPostTitle={props.state.profilePage.newPostTitle}
-                                                           updateNewPostTitle={props.updateNewPostTitle}
-                                                           addPost={props.addPost}/>}
+                                                           dispatch={props.dispatch}/>}
                 />
                 <Route path={'/users'} element={<Users/>}/>
             </Routes>
@@ -24,11 +23,11 @@ export function Main(props: any) {
 export function Profile(props: any) {
 
     const onTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        props.updateNewPostTitle(e.currentTarget.value)
+        props.dispatch({type: 'UPDATE-NEW-POST-TITLE', newTitle: e.currentTarget.value})
     }
 
     const onAddPostClick = () => {
-        props.addPost()
+        props.dispatch({type: 'ADD-POST'})
     }
     return (
         <div className="Profile">

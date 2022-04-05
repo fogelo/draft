@@ -13,18 +13,20 @@ export const store = {
     getState() {
         return this._state
     },
-    updateNewPostTitle(newTitle: any) {
-        this._state.profilePage.newPostTitle = newTitle
-        this._callSubscribe()
-    },
-    addPost() {
-        const newPost = {
-            id: v1(),
-            title: this._state.profilePage.newPostTitle
+
+    dispatch(action: any) {
+        if (action.type === 'UPDATE-NEW-POST-TITLE') {
+            this._state.profilePage.newPostTitle = action.newTitle
+            this._callSubscribe()
+        } else if (action.type === 'ADD-POST') {
+            const newPost = {
+                id: v1(),
+                title: this._state.profilePage.newPostTitle
+            }
+            this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
+            this._state.profilePage.newPostTitle = ''
+            this._callSubscribe()
         }
-        this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
-        this._state.profilePage.newPostTitle = ''
-        this._callSubscribe()
     },
     _callSubscribe() {
     },
