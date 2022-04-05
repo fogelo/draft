@@ -25,6 +25,9 @@ export const profileReducer = (state: any = initState, action: any) => {
                 newPostTitle: ''
             }
         }
+        default: {
+            return state
+        }
     }
 }
 

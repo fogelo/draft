@@ -4,13 +4,13 @@ import './index.css';
 import {App} from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
-import {store} from './components/redux/store';
+import {store} from './components/redux/redux-store';
 
 
 function renderApp() {
     ReactDOM.render(
         <BrowserRouter>
-            <App state={store.getState()} dispatch={store.dispatch.bind(store)}/>
+            <App state={store.getState()} dispatch={store.dispatch}/>
         </BrowserRouter>,
         document.getElementById('root')
     );

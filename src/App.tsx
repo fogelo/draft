@@ -4,7 +4,6 @@ import {Main} from './components/Main/Main';
 import {NavLink} from 'react-router-dom';
 
 export function App(props: any) {
-
     return (
         <div className="App">
             <Header/>
