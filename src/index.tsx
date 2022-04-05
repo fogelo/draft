@@ -5,17 +5,31 @@ import {App} from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
 import {store} from './components/redux/redux-store';
+import {Provider} from 'react-redux';
 
 
 export const StoreContext = React.createContext(null)
 
+const Provide = (props: any) => {
+    return <StoreContext.Provider value={props.store}>
+        {props.children}
+    </StoreContext.Provider>
+}
+
 function renderApp() {
     ReactDOM.render(
-        <StoreContext.Provider value={store}>
-            <BrowserRouter>
+        <BrowserRouter>
+            <Provide store={store}>
                 <App/>
-            </BrowserRouter>
-        </StoreContext.Provider>,
+            </Provide>
+        </BrowserRouter>
+        ,
+
+        // <StoreContext.Provider value={store}>
+        //     <BrowserRouter>
+        //         <App/>
+        //     </BrowserRouter>
+        // </StoreContext.Provider>,
         document.getElementById('root')
     );
 }
