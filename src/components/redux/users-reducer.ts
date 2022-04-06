@@ -20,7 +20,10 @@ const initState = {
             'status': null,
             'followed': false
         }
-    ]
+    ],
+    totalUsersCount: 0,
+    usersCount: 5,
+    currentPage: 1
 }
 
 export const usersReducer = (state: any = initState, action: any) => {
@@ -43,6 +46,18 @@ export const usersReducer = (state: any = initState, action: any) => {
                 users: state.users.map((u: any) => u.id === action.userId ? {...u, followed: false} : u)
             }
         }
+        case 'SET-TOTAL-USERS-COUNT': {
+            return {
+                ...state,
+                totalUsersCount: action.totalUsersCount
+            }
+        }
+        case 'SET-CURRENT-PAGE': {
+            return {
+                ...state,
+                currentPage: action.currentPage
+            }
+        }
         default: {
             return state
         }
@@ -53,3 +68,6 @@ export const setUsersAC = (users: any) => ({type: 'SET-USERS', users})
 
 export const followAC = (userId: any) => ({type: 'FOLLOW', userId})
 export const unfollowAC = (userId: any) => ({type: 'UNFOLLOW', userId})
+
+export const setTotalUsersCountAC = (totalUsersCount: any) => ({type: 'SET-TOTAL-USERS-COUNT', totalUsersCount})
+export const setCurrentPageAC = (currentPage: any) => ({type: 'SET-CURRENT-PAGE', currentPage})
