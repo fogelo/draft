@@ -65,10 +65,10 @@ export function Profile(props: any) {
         props.addPost()
     }
 
-    const navigate = useNavigate()
-    useEffect(() => {
-        if (!props.login) navigate('/login')
-    }, [])
+    // const navigate = useNavigate()
+    // useEffect(() => {
+    //     if (!props.login) navigate('/login')
+    // }, [])
 
     if (!props.profile) {
         return <Preloader/>

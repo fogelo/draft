@@ -1,30 +1,31 @@
 const initState = {
     users: [
-        {
-            'name': 'Shubert',
-            'id': 1,
-            'photos': {
-                'small': null,
-                'large': null
-            },
-            'status': null,
-            'followed': false
-        },
-        {
-            'name': 'Hacker',
-            'id': 2,
-            'photos': {
-                'small': null,
-                'large': null
-            },
-            'status': null,
-            'followed': false
-        }
+        // {
+        //     'name': 'Shubert',
+        //     'id': 1,
+        //     'photos': {
+        //         'small': null,
+        //         'large': null
+        //     },
+        //     'status': null,
+        //     'followed': false
+        // },
+        // {
+        //     'name': 'Hacker',
+        //     'id': 2,
+        //     'photos': {
+        //         'small': null,
+        //         'large': null
+        //     },
+        //     'status': null,
+        //     'followed': false
+        // }
     ],
     totalUsersCount: 0,
-    usersCount: 100,
+    usersCount: 10,
     currentPage: 1,
-    idLoading: false
+    idLoading: false,
+    followingInProgress: []
 }
 
 export const usersReducer = (state: any = initState, action: any) => {
@@ -65,6 +66,14 @@ export const usersReducer = (state: any = initState, action: any) => {
                 isLoading: action.isLoading
             }
         }
+        case 'TOGGLE-FOLLOWING-IN-PROGRESS': {
+            return {
+                ...state,
+                followingInProgress: state.followingInProgress.some((id: any) => id === action.userId)
+                    ? state.followingInProgress.filter((id: any) => id !== action.userId)
+                    : [...state.followingInProgress, action.userId]
+            }
+        }
         default: {
             return state
         }
@@ -80,3 +89,5 @@ export const setTotalUsersCountAC = (totalUsersCount: any) => ({type: 'SET-TOTAL
 export const setCurrentPageAC = (currentPage: any) => ({type: 'SET-CURRENT-PAGE', currentPage})
 
 export const setIsLoadingAC = (isLoading: any) => ({type: 'SET-IS-LOADING', isLoading})
+
+export const toggleFollowingInProgressAC = (userId: any) => ({type: 'TOGGLE-FOLLOWING-IN-PROGRESS', userId})
