@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch: any) => {
 }
 
 
-export class Users extends React.Component<any> {
+export class UsersAPI extends React.Component<any> {
     componentDidMount() {
         axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=1&count=${this.props.usersCount}`)
             .then(response => {
@@ -51,34 +51,38 @@ export class Users extends React.Component<any> {
     }
 
     render() {
-        console.log('render users')
-        const pagesCount = Math.ceil(this.props.totalUsersCount / this.props.usersCount)
-        const pages = Array(pagesCount).fill(0).map((e, i) => i + 1)
-        return (
-            <div className="Users">
-                {pages.map(i => <span className={`page ${this.props.currentPage === i ? 'currentPage' : ''}`}
-                                      onClick={() => this.onPageChanged(i)}>{i}</span>)}
-
-                {this.props.users.map((u: any) => <div key={u.id} style={{margin: '10px 0'}}>
-                    <div>{u.name}</div>
-                    <div>{u.photos.small || <img src={photo} alt="user" style={{width: '100px'}}/>}</div>
-                    <div>
-                        {u.followed
-                            ? <button onClick={() => {
-
-                                this.props.unfollow(u.id)
-
-                            }
-                            }>unfollow</button>
-                            : <button onClick={() => {
-                                this.props.follow(u.id)
-
-                            }}>follow</button>}
-                    </div>
-                </div>)}
-            </div>
-        );
+        return <Users {...this.props} onPageChanged={this.onPageChanged.bind(this)}/>
     }
 }
 
-export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(Users)
+const Users = (props: any) => {
+    console.log('render users')
+    const pagesCount = Math.ceil(props.totalUsersCount / props.usersCount)
+    const pages = Array(pagesCount).fill(0).map((e, i) => i + 1)
+    return (
+        <div className="Users">
+            {pages.map(i => <span  key={i} className={`page ${props.currentPage === i ? 'currentPage' : ''}`}
+                                  onClick={() => props.onPageChanged(i)}>{i}</span>)}
+
+            {props.users.map((u: any) => <div key={u.id} style={{margin: '10px 0'}}>
+                <div>{u.name}</div>
+                <div>{u.photos.small || <img src={photo} alt="user" style={{width: '100px'}}/>}</div>
+                <div>
+                    {u.followed
+                        ? <button onClick={() => {
+
+                            props.unfollow(u.id)
+
+                        }
+                        }>unfollow</button>
+                        : <button onClick={() => {
+                            props.follow(u.id)
+
+                        }}>follow</button>}
+                </div>
+            </div>)}
+        </div>
+    );
+}
+
+export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
