@@ -4,6 +4,17 @@ import {connect} from 'react-redux';
 import {v1} from 'uuid';
 import axios from 'axios';
 import photo from '../../img/user.png';
+import {Preloader} from '../common/Preloader';
+import {useMatch} from 'react-router-dom';
+
+
+const withRouter = (Component: any) => {
+    const ComponentContainer = (props: any) => {
+        const match = useMatch('/profile/:id')
+        return <Component {...props} match={match}/>
+    }
+    return ComponentContainer
+}
 
 const mapStateToProps = (state: any) => {
     return {
@@ -26,11 +37,11 @@ const mapDispatchToProps = (dispatch: any) => {
     }
 }
 
+
 class ProfileAPI extends React.Component<any> {
     componentDidMount() {
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/2`)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.match.params.id}`)
             .then(response => {
-                console.log(response)
                 this.props.setUserProfile(response.data)
             })
     }
@@ -40,16 +51,20 @@ class ProfileAPI extends React.Component<any> {
     }
 }
 
-export const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(ProfileAPI)
+const ProfileRouter = withRouter(ProfileAPI)
+
+export const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(ProfileRouter)
 
 export function Profile(props: any) {
-
     const onTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         props.updatePostTitle(e.currentTarget.value)
     }
 
     const onAddPostClick = () => {
         props.addPost()
+    }
+    if (!props.profile) {
+        return <Preloader/>
     }
     return (
         <div className="Profile">

@@ -22,7 +22,7 @@ const initState = {
         }
     ],
     totalUsersCount: 0,
-    usersCount: 5,
+    usersCount: 100,
     currentPage: 1,
     idLoading: false
 }

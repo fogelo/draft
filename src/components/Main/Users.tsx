@@ -86,24 +86,27 @@ const Users = (props: any) => {
 
             {props.users.map((u: any) => <div key={u.id} style={{margin: '10px 0'}}>
                 <div>{u.name}</div>
+                <div>{u.id}</div>
                 <div>
                     <NavLink to={`/profile/${u.id}`}>
-                        {u.photos.small || <img src={photo} alt="user" style={{width: '100px'}}/>}
-                    </NavLink>
-                </div>
-                <div>
-                    {u.followed
-                        ? <button onClick={() => {
+                        {u.photos.small
+                            ? <img src={u.photos.small} alt="user" style={{width: '100px'}}/>
+                            : <img src={photo} alt="user" style={{width: '100px'}}/>}
+                            </NavLink>
+                            </div>
+                            <div>
+                        {u.followed
+                            ? <button onClick={() => {
                             props.unfollow(u.id)
                         }
                         }>unfollow</button>
-                        : <button onClick={() => {
+                            : <button onClick={() => {
                             props.follow(u.id)
                         }}>follow</button>}
+                            </div>
+                            </div>)}
                 </div>
-            </div>)}
-        </div>
-    );
-}
+                );
+                }
 
-export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
+                export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
