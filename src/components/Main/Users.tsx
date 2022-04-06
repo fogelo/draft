@@ -10,8 +10,8 @@ import {
     setUsersAC,
     unfollowAC
 } from '../redux/users-reducer';
-import preloader from '../../img/preloader.gif'
 import {Preloader} from '../common/Preloader';
+import {NavLink} from 'react-router-dom';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -86,18 +86,19 @@ const Users = (props: any) => {
 
             {props.users.map((u: any) => <div key={u.id} style={{margin: '10px 0'}}>
                 <div>{u.name}</div>
-                <div>{u.photos.small || <img src={photo} alt="user" style={{width: '100px'}}/>}</div>
+                <div>
+                    <NavLink to={`/profile/${u.id}`}>
+                        {u.photos.small || <img src={photo} alt="user" style={{width: '100px'}}/>}
+                    </NavLink>
+                </div>
                 <div>
                     {u.followed
                         ? <button onClick={() => {
-
                             props.unfollow(u.id)
-
                         }
                         }>unfollow</button>
                         : <button onClick={() => {
                             props.follow(u.id)
-
                         }}>follow</button>}
                 </div>
             </div>)}

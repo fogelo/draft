@@ -5,7 +5,8 @@ const initState = {
         {id: v1(), title: 'post 1'},
         {id: v1(), title: 'post 2'},
     ],
-    newPostTitle: 'new post'
+    newPostTitle: 'new post',
+    profile: null
 }
 
 export const profileReducer = (state: any = initState, action: any) => {
@@ -18,11 +19,16 @@ export const profileReducer = (state: any = initState, action: any) => {
                 id: v1(),
                 title: 'sss'
             }
-
             return {
                 ...state,
                 posts: [newPost, ...state.posts],
                 newPostTitle: ''
+            }
+        }
+        case 'SET-USER-PROFILE': {
+            return {
+                ...state,
+                profile: action.profile
             }
         }
         default: {
@@ -34,4 +40,4 @@ export const profileReducer = (state: any = initState, action: any) => {
 export const updateNewPostTitleAC = (newTitle: any) => ({type: 'UPDATE-NEW-POST-TITLE', newTitle})
 export const addPostAC = () => ({type: 'ADD-POST'})
 
-
+export const setUserProfileAC = (profile: any) => ({type: 'SET-USER-PROFILE', profile})
