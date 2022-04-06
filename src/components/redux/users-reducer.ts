@@ -23,7 +23,8 @@ const initState = {
     ],
     totalUsersCount: 0,
     usersCount: 5,
-    currentPage: 1
+    currentPage: 1,
+    idLoading: false
 }
 
 export const usersReducer = (state: any = initState, action: any) => {
@@ -58,6 +59,12 @@ export const usersReducer = (state: any = initState, action: any) => {
                 currentPage: action.currentPage
             }
         }
+        case 'SET-IS-LOADING': {
+            return {
+                ...state,
+                isLoading: action.isLoading
+            }
+        }
         default: {
             return state
         }
@@ -71,3 +78,5 @@ export const unfollowAC = (userId: any) => ({type: 'UNFOLLOW', userId})
 
 export const setTotalUsersCountAC = (totalUsersCount: any) => ({type: 'SET-TOTAL-USERS-COUNT', totalUsersCount})
 export const setCurrentPageAC = (currentPage: any) => ({type: 'SET-CURRENT-PAGE', currentPage})
+
+export const setIsLoadingAC = (isLoading: any) => ({type: 'SET-IS-LOADING', isLoading})

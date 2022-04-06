@@ -29,3 +29,10 @@
     font-weight: bold;
     font-size: 20px;
 }
+
+.preloader {
+    background-image: url("./img/preloader.gif");
+    background-position: center;
+    width: 100px;
+    height: 100px;
+}

@@ -2,14 +2,24 @@ import React from 'react';
 import {connect} from 'react-redux';
 import photo from '../../img/user.png'
 import axios from 'axios';
-import {followAC, setCurrentPageAC, setTotalUsersCountAC, setUsersAC, unfollowAC} from '../redux/users-reducer';
+import {
+    followAC,
+    setCurrentPageAC,
+    setIsLoadingAC,
+    setTotalUsersCountAC,
+    setUsersAC,
+    unfollowAC
+} from '../redux/users-reducer';
+import preloader from '../../img/preloader.gif'
+import {Preloader} from '../common/Preloader';
 
 const mapStateToProps = (state: any) => {
     return {
         users: state.usersPage.users,
         totalUsersCount: state.usersPage.totalUsersCount,
         usersCount: state.usersPage.usersCount,
-        currentPage: state.usersPage.currentPage
+        currentPage: state.usersPage.currentPage,
+        isLoading: state.usersPage.isLoading
     }
 }
 const mapDispatchToProps = (dispatch: any) => {
@@ -28,6 +38,9 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         setCurrentPage: (currentPage: any) => {
             dispatch(setCurrentPageAC(currentPage))
+        },
+        setIsLoading: (isLoading: any) => {
+            dispatch(setIsLoadingAC(isLoading))
         }
     }
 }
@@ -35,18 +48,22 @@ const mapDispatchToProps = (dispatch: any) => {
 
 export class UsersAPI extends React.Component<any> {
     componentDidMount() {
+        this.props.setIsLoading(true)
         axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=1&count=${this.props.usersCount}`)
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.setTotalUsersCount(response.data.totalCount)
+                this.props.setIsLoading(false)
             })
     }
 
     onPageChanged(currentPage: any) {
+        this.props.setIsLoading(true)
         axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currentPage}&count=${this.props.usersCount}`)
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.setCurrentPage(currentPage)
+                this.props.setIsLoading(false)
             })
     }
 
@@ -59,9 +76,12 @@ const Users = (props: any) => {
     console.log('render users')
     const pagesCount = Math.ceil(props.totalUsersCount / props.usersCount)
     const pages = Array(pagesCount).fill(0).map((e, i) => i + 1)
+
+
     return (
         <div className="Users">
-            {pages.map(i => <span  key={i} className={`page ${props.currentPage === i ? 'currentPage' : ''}`}
+            {props.isLoading ? <Preloader/> : ''}
+            {pages.map(i => <span key={i} className={`page ${props.currentPage === i ? 'currentPage' : ''}`}
                                   onClick={() => props.onPageChanged(i)}>{i}</span>)}
 
             {props.users.map((u: any) => <div key={u.id} style={{margin: '10px 0'}}>
