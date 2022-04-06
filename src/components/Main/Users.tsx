@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
 import photo from '../../img/user.png'
 import axios from 'axios';
@@ -9,9 +9,9 @@ import {
     setTotalUsersCountAC,
     setUsersAC,
     unfollowAC
-} from '../redux/users-reducer';
+} from '../../redux/users-reducer';
 import {Preloader} from '../common/Preloader';
-import {NavLink} from 'react-router-dom';
+import {NavLink, useNavigate} from 'react-router-dom';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -19,7 +19,8 @@ const mapStateToProps = (state: any) => {
         totalUsersCount: state.usersPage.totalUsersCount,
         usersCount: state.usersPage.usersCount,
         currentPage: state.usersPage.currentPage,
-        isLoading: state.usersPage.isLoading
+        isLoading: state.usersPage.isLoading,
+        login: state.auth.login
     }
 }
 const mapDispatchToProps = (dispatch: any) => {
@@ -77,6 +78,10 @@ const Users = (props: any) => {
     const pagesCount = Math.ceil(props.totalUsersCount / props.usersCount)
     const pages = Array(pagesCount).fill(0).map((e, i) => i + 1)
 
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (!props.login) navigate('/login')
+    }, [])
 
     return (
         <div className="Users">
@@ -92,21 +97,21 @@ const Users = (props: any) => {
                         {u.photos.small
                             ? <img src={u.photos.small} alt="user" style={{width: '100px'}}/>
                             : <img src={photo} alt="user" style={{width: '100px'}}/>}
-                            </NavLink>
-                            </div>
-                            <div>
-                        {u.followed
-                            ? <button onClick={() => {
+                    </NavLink>
+                </div>
+                <div>
+                    {u.followed
+                        ? <button onClick={() => {
                             props.unfollow(u.id)
                         }
                         }>unfollow</button>
-                            : <button onClick={() => {
+                        : <button onClick={() => {
                             props.follow(u.id)
                         }}>follow</button>}
-                            </div>
-                            </div>)}
                 </div>
-                );
-                }
+            </div>)}
+        </div>
+    );
+}
 
-                export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
+export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)

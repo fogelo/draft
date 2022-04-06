@@ -1,17 +1,17 @@
-import {addPostAC, setUserProfileAC, updateNewPostTitleAC} from '../redux/profile-reducer';
-import React, {ChangeEvent} from 'react';
+import {addPostAC, setUserProfileAC, updateNewPostTitleAC} from '../../redux/profile-reducer';
+import React, {ChangeEvent, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {v1} from 'uuid';
 import axios from 'axios';
 import photo from '../../img/user.png';
 import {Preloader} from '../common/Preloader';
-import {useMatch} from 'react-router-dom';
+import {Navigate, useMatch, useNavigate} from 'react-router-dom';
 
 
 const withRouter = (Component: any) => {
     const ComponentContainer = (props: any) => {
         const match = useMatch('/profile/:id')
-        return <Component {...props} match={match}/>
+        return <Component {...props} id={match ? match.params.id : '23196'}/>
     }
     return ComponentContainer
 }
@@ -20,7 +20,8 @@ const mapStateToProps = (state: any) => {
     return {
         posts: state.profilePage.posts,
         newPostTitle: state.profilePage.newPostTitle,
-        profile: state.profilePage.profile
+        profile: state.profilePage.profile,
+        login: state.auth.login
     }
 }
 const mapDispatchToProps = (dispatch: any) => {
@@ -40,7 +41,7 @@ const mapDispatchToProps = (dispatch: any) => {
 
 class ProfileAPI extends React.Component<any> {
     componentDidMount() {
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.match.params.id}`)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.id}`)
             .then(response => {
                 this.props.setUserProfile(response.data)
             })
@@ -63,6 +64,12 @@ export function Profile(props: any) {
     const onAddPostClick = () => {
         props.addPost()
     }
+
+    const navigate = useNavigate()
+    useEffect(() => {
+        if (!props.login) navigate('/login')
+    }, [])
+
     if (!props.profile) {
         return <Preloader/>
     }

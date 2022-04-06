@@ -4,6 +4,9 @@
 
 .Header {
     background-color: antiquewhite;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .content {

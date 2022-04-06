@@ -2,13 +2,14 @@ import React from 'react';
 import './App.css';
 import {Main} from './components/Main/Main';
 import {NavLink} from 'react-router-dom';
+import {HeaderContainer} from './components/Header';
 
 export class App extends React.Component<any> {
     render() {
         console.log('app')
         return (
             <div className="App">
-                <Header/>
+                <HeaderContainer/>
                 <div className={'content'}>
                     <Menu/>
                     <Main/>
@@ -16,15 +17,6 @@ export class App extends React.Component<any> {
             </div>
         );
     }
-}
-
-export function Header() {
-
-    return (
-        <div className="Header">
-            Header
-        </div>
-    );
 }
 
 export function Menu() {
