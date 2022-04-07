@@ -1,8 +1,8 @@
 import React from 'react';
 import {authMeAC} from '../redux/auth-reducer';
 import {connect} from 'react-redux';
-import axios from 'axios';
 import {NavLink} from 'react-router-dom';
+import {authAPI} from '../DAL/api';
 
 function Header(props: any) {
 
@@ -21,7 +21,7 @@ function Header(props: any) {
 
 class HeaderAPI extends React.Component<any, any> {
     componentDidMount() {
-        axios.get('https://social-network.samuraijs.com/api/1.0/auth/me', {withCredentials: true})
+        authAPI.getAuth()
             .then(response => {
                 this.props.authMe(response.data.data)
             })

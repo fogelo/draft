@@ -13,6 +13,7 @@ import photo from '../../img/user.png';
 import {Preloader} from '../common/Preloader';
 import {Navigate, useMatch, useNavigate} from 'react-router-dom';
 import {compose} from 'redux';
+import {profileAPI} from '../../DAL/api';
 
 
 const withRouter = (Component: any) => {
@@ -55,24 +56,12 @@ const mapDispatchToProps = (dispatch: any) => {
 
 class ProfileAPI extends React.Component<any> {
     componentDidMount() {
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.id}`, {
-            withCredentials: true,
-            headers: {
-                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-            }
-        })
+        profileAPI.getProfile(this.props.id)
             .then(response => {
-                console.log('setUserProfile')
                 this.props.setUserProfile(response.data)
             })
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/status/${this.props.id}`, {
-            withCredentials: true,
-            headers: {
-                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-            }
-        })
+        profileAPI.getStatus(this.props.id)
             .then(response => {
-                console.log('setUserStatus')
                 this.props.setUserStatus(response.data)
             })
     }
@@ -140,13 +129,7 @@ class ProfileStatus extends React.Component<any> {
     }
 
     deActivateEditMode() {
-
-        axios.put(`https://social-network.samuraijs.com/api/1.0/profile/status`, {status: this.state.status}, {
-            withCredentials: true,
-            headers: {
-                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-            }
-        })
+        profileAPI.putStatus(this.state.status)
             .then(response => {
                 if (response.data.resultCode === 0) {
                     this.props.updateStatus(this.state.status)

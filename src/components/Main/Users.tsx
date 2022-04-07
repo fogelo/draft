@@ -12,6 +12,7 @@ import {
 } from '../../redux/users-reducer';
 import {Preloader} from '../common/Preloader';
 import {NavLink, useNavigate} from 'react-router-dom';
+import {usersAPI} from '../../DAL/api';
 
 const mapStateToProps = (state: any) => {
     return {
@@ -54,12 +55,7 @@ const mapDispatchToProps = (dispatch: any) => {
 export class UsersAPI extends React.Component<any> {
     componentDidMount() {
         this.props.setIsLoading(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=1&count=${this.props.usersCount}`, {
-            withCredentials: true,
-            headers: {
-                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-            }
-        })
+        usersAPI.getUsers(1, this.props.usersCount)
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.setTotalUsersCount(response.data.totalCount)
@@ -69,12 +65,7 @@ export class UsersAPI extends React.Component<any> {
 
     onPageChanged(currentPage: any) {
         this.props.setIsLoading(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currentPage}&count=${this.props.usersCount}`, {
-            withCredentials: true,
-            headers: {
-                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-            }
-        })
+        usersAPI.getUsers(currentPage, this.props.usersCount)
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.setCurrentPage(currentPage)
@@ -121,12 +112,7 @@ const Users = (props: any) => {
                                 ? <button disabled={props.followingInProgress.some((id: any) => id === u.id)}
                                           onClick={() => {
                                               props.toggleFollowingInProgress(u.id)
-                                              axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {
-                                                  withCredentials: true,
-                                                  headers: {
-                                                      'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-                                                  }
-                                              })
+                                              usersAPI.deleteFollow(u.id)
                                                   .then(response => {
                                                       if (response.data.resultCode === 0) {
                                                           props.toggleFollowingInProgress(u.id)
@@ -138,12 +124,7 @@ const Users = (props: any) => {
                                 : <button disabled={props.followingInProgress.some((id: any) => id === u.id)}
                                           onClick={() => {
                                               props.toggleFollowingInProgress(u.id)
-                                              axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${u.id}`, {}, {
-                                                  withCredentials: true,
-                                                  headers: {
-                                                      'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
-                                                  }
-                                              })
+                                              usersAPI.postFollow(u.id)
                                                   .then(response => {
                                                       if (response.data.resultCode === 0) {
                                                           props.toggleFollowingInProgress(u.id)
