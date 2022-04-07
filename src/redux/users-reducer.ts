@@ -1,3 +1,5 @@
+import {usersAPI} from '../DAL/api';
+
 const initState = {
     users: [
         // {
@@ -91,3 +93,25 @@ export const setCurrentPageAC = (currentPage: any) => ({type: 'SET-CURRENT-PAGE'
 export const setIsLoadingAC = (isLoading: any) => ({type: 'SET-IS-LOADING', isLoading})
 
 export const toggleFollowingInProgressAC = (userId: any) => ({type: 'TOGGLE-FOLLOWING-IN-PROGRESS', userId})
+
+export const unfollowTC = (id: any) => (dispatch: any) => {
+    dispatch(toggleFollowingInProgressAC(id))
+    usersAPI.deleteFollow(id)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(toggleFollowingInProgressAC(id))
+                dispatch(unfollowAC(id))
+            }
+        })
+}
+
+export const followTC = (id: any) => (dispatch: any) => {
+    dispatch(toggleFollowingInProgressAC(id))
+    usersAPI.postFollow(id)
+        .then(response => {
+            if (response.data.resultCode === 0) {
+                dispatch(toggleFollowingInProgressAC(id))
+                dispatch(followAC(id))
+            }
+        })
+}

@@ -8,11 +8,9 @@ import {
 import React, {ChangeEvent, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {v1} from 'uuid';
-import axios from 'axios';
 import photo from '../../img/user.png';
 import {Preloader} from '../common/Preloader';
 import {Navigate, useMatch, useNavigate} from 'react-router-dom';
-import {compose} from 'redux';
 import {profileAPI} from '../../DAL/api';
 
 
