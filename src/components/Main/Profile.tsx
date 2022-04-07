@@ -6,6 +6,7 @@ import axios from 'axios';
 import photo from '../../img/user.png';
 import {Preloader} from '../common/Preloader';
 import {Navigate, useMatch, useNavigate} from 'react-router-dom';
+import {compose} from 'redux';
 
 
 const withRouter = (Component: any) => {
@@ -52,9 +53,12 @@ class ProfileAPI extends React.Component<any> {
     }
 }
 
+//вот так без функции compose
 const ProfileRouter = withRouter(ProfileAPI)
-
 export const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(ProfileRouter)
+
+//а вот так с функцией compose
+// export const ProfileContainer = compose(connect(mapStateToProps, mapDispatchToProps), withRouter)(ProfileAPI)
 
 export function Profile(props: any) {
     const onTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
