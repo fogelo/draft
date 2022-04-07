@@ -1,4 +1,4 @@
-import {addPostAC, setUserProfileAC, updateNewPostTitleAC} from '../../redux/profile-reducer';
+import {addPostAC, setUserProfileAC, setUserStatusAC, updateNewPostTitleAC} from '../../redux/profile-reducer';
 import React, {ChangeEvent, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {v1} from 'uuid';
@@ -22,7 +22,8 @@ const mapStateToProps = (state: any) => {
         posts: state.profilePage.posts,
         newPostTitle: state.profilePage.newPostTitle,
         profile: state.profilePage.profile,
-        login: state.auth.login
+        login: state.auth.login,
+        userStatus: state.profilePage.userStatus
     }
 }
 const mapDispatchToProps = (dispatch: any) => {
@@ -35,6 +36,9 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         setUserProfile: (profile: any) => {
             dispatch(setUserProfileAC(profile))
+        },
+        setUserStatus: (userStatus: any) => {
+            dispatch(setUserStatusAC(userStatus))
         }
     }
 }
@@ -42,13 +46,30 @@ const mapDispatchToProps = (dispatch: any) => {
 
 class ProfileAPI extends React.Component<any> {
     componentDidMount() {
-        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.id}`)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.id}`, {
+            withCredentials: true,
+            headers: {
+                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+            }
+        })
             .then(response => {
+                console.log('setUserProfile')
                 this.props.setUserProfile(response.data)
+            })
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/status/${this.props.id}`, {
+            withCredentials: true,
+            headers: {
+                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+            }
+        })
+            .then(response => {
+                console.log('setUserStatus')
+                this.props.setUserStatus(response.data)
             })
     }
 
     render() {
+        console.log('profileAPI')
         return <Profile {...this.props}/>
     }
 }
@@ -79,7 +100,8 @@ export function Profile(props: any) {
     }
     return (
         <div className="Profile">
-            <div>{props.profile.fullName}</div>
+            <div>name: {props.profile.fullName}</div>
+            <ProfileStatus userStatus={props.userStatus} />
             <div>id: {props.profile.userId}</div>
             <div>
                 {props.profile.photos.small
@@ -94,4 +116,43 @@ export function Profile(props: any) {
             {props.posts.map((p: any) => <div key={v1()}>{p.title}</div>)}
         </div>
     );
+}
+
+class ProfileStatus extends React.Component<{userStatus: string}> {
+
+    state = {
+        status: this.props.userStatus,
+        editMode: false
+    }
+
+    activateEditMode() {
+        this.setState({
+            editMode: true
+        })
+    }
+
+    deActivateEditMode() {
+        this.setState({
+            editMode: false
+        })
+    }
+    componentDidUpdate(prevProps:Readonly<any>) {
+      if (this.props.userStatus !== prevProps.userStatus) {
+         this.setState({status: this.props.userStatus})
+
+      }
+    }
+
+    render() {
+        console.log('ProfileStatus')
+        console.log(this.props)
+        // debugger
+        return <div>
+            {this.state.editMode
+                ? <input type="text"
+                         onBlur={this.deActivateEditMode.bind(this)}
+                         autoFocus/>
+                : <span onDoubleClick={this.activateEditMode.bind(this)}>status: {this.state.status}</span>}
+        </div>
+    }
 }

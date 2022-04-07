@@ -101,6 +101,7 @@ const Users = (props: any) => {
                 return (
                     <div key={u.id} style={{margin: '10px 0'}}>
                         <div>{u.name}</div>
+                        <div>status: {u.status}</div>
                         <div>{u.id}</div>
                         <div>{u.followed ? 'true' : 'false'}</div>
                         <div>
