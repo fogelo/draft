@@ -1,4 +1,10 @@
-import {addPostAC, setUserProfileAC, setUserStatusAC, updateNewPostTitleAC} from '../../redux/profile-reducer';
+import {
+    addPostAC,
+    setUserProfileAC,
+    setUserStatusAC,
+    updateNewPostTitleAC,
+    updateStatusAC
+} from '../../redux/profile-reducer';
 import React, {ChangeEvent, useEffect} from 'react';
 import {connect} from 'react-redux';
 import {v1} from 'uuid';
@@ -39,6 +45,9 @@ const mapDispatchToProps = (dispatch: any) => {
         },
         setUserStatus: (userStatus: any) => {
             dispatch(setUserStatusAC(userStatus))
+        },
+        updateStatus: (status: any) => {
+            dispatch(updateStatusAC(status))
         }
     }
 }
@@ -101,7 +110,7 @@ export function Profile(props: any) {
     return (
         <div className="Profile">
             <div>name: {props.profile.fullName}</div>
-            <ProfileStatus userStatus={props.userStatus} />
+            <ProfileStatus userStatus={props.userStatus} updateStatus={props.updateStatus}/>
             <div>id: {props.profile.userId}</div>
             <div>
                 {props.profile.photos.small
@@ -118,8 +127,7 @@ export function Profile(props: any) {
     );
 }
 
-class ProfileStatus extends React.Component<{userStatus: string}> {
-
+class ProfileStatus extends React.Component<any> {
     state = {
         status: this.props.userStatus,
         editMode: false
@@ -132,15 +140,27 @@ class ProfileStatus extends React.Component<{userStatus: string}> {
     }
 
     deActivateEditMode() {
-        this.setState({
-            editMode: false
-        })
-    }
-    componentDidUpdate(prevProps:Readonly<any>) {
-      if (this.props.userStatus !== prevProps.userStatus) {
-         this.setState({status: this.props.userStatus})
 
-      }
+        axios.put(`https://social-network.samuraijs.com/api/1.0/profile/status`, {status: this.state.status}, {
+            withCredentials: true,
+            headers: {
+                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+            }
+        })
+            .then(response => {
+                if (response.data.resultCode === 0) {
+                    this.props.updateStatus(this.state.status)
+                    this.setState({
+                        editMode: false
+                    })
+                }
+            })
+    }
+
+    componentDidUpdate(prevProps: Readonly<any>) {
+        if (this.props.userStatus !== prevProps.userStatus) {
+            this.setState({status: this.props.userStatus})
+        }
     }
 
     render() {
@@ -151,6 +171,8 @@ class ProfileStatus extends React.Component<{userStatus: string}> {
             {this.state.editMode
                 ? <input type="text"
                          onBlur={this.deActivateEditMode.bind(this)}
+                         value={this.state.status}
+                         onChange={(e) => this.setState({status: e.currentTarget.value})}
                          autoFocus/>
                 : <span onDoubleClick={this.activateEditMode.bind(this)}>status: {this.state.status}</span>}
         </div>

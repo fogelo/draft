@@ -69,7 +69,12 @@ export class UsersAPI extends React.Component<any> {
 
     onPageChanged(currentPage: any) {
         this.props.setIsLoading(true)
-        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currentPage}&count=${this.props.usersCount}`)
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currentPage}&count=${this.props.usersCount}`, {
+            withCredentials: true,
+            headers: {
+                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+            }
+        })
             .then(response => {
                 this.props.setUsers(response.data.items)
                 this.props.setCurrentPage(currentPage)

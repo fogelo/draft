@@ -52,3 +52,4 @@ export const setUserProfileAC = (profile: any) => ({type: 'SET-USER-PROFILE', pr
 
 export const setUserStatusAC = (status: any) => ({type: 'SET-USER-STATUS', status})
 
+export const updateStatusAC = (status: any) => ({type: 'UPDATE-STATUS', status})
