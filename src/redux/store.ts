@@ -14,11 +14,29 @@ type StateType = {
     profilePage: ProfilePageType
 }
 
+type ActionType = UpdateNewPostTitleAT | AddPostAT
+
+export const updateNewPostTitleAC = (newPostTitle: string): UpdateNewPostTitleAT => ({
+    type: 'UPDATE-NEW-POST-TITLE',
+    newPostTitle
+})
+export const addPostAC = (): AddPostAT => ({type: 'ADD-POST'})
+
+type UpdateNewPostTitleAT = {
+    type: 'UPDATE-NEW-POST-TITLE'
+    newPostTitle: string
+}
+
+type AddPostAT = {
+    type: 'ADD-POST'
+}
+
 export type StoreType = {
     _state: StateType
     getState: () => StateType
-    updateNewPostTitle: (newPostTitle: string) => void
-    addPost: () => void
+    // updateNewPostTitle: (newPostTitle: string) => void
+    // addPost: () => void
+    dispatch: (action: ActionType) => void
     _callSubscriber: (store: StoreType) => void
     subscribe: (observer: (store: StoreType) => void) => void
 }
@@ -38,21 +56,25 @@ export const store: StoreType = {
     getState() {
         return this._state
     },
-    updateNewPostTitle(newPostTitle) {
-        this._state.profilePage.newPostTitle = newPostTitle
-        this._callSubscriber(this)
-    },
-    addPost() {
-        const newPost = {
-            id: v1(),
-            title: this._state.profilePage.newPostTitle
+    dispatch(action: ActionType) {
+        switch (action.type) {
+            case 'UPDATE-NEW-POST-TITLE': {
+                this._state.profilePage.newPostTitle = action.newPostTitle
+                this._callSubscriber(this)
+                return
+            }
+            case 'ADD-POST': {
+                const newPost = {
+                    id: v1(),
+                    title: this._state.profilePage.newPostTitle
+                }
+                this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
+                this._state.profilePage.newPostTitle = ''
+                this._callSubscriber(this)
+            }
         }
-        this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
-        this._state.profilePage.newPostTitle = ''
-        this._callSubscriber(this)
     },
     _callSubscriber() {
-
     },
     subscribe(observer) {
         this._callSubscriber = observer

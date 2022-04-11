@@ -2,6 +2,7 @@ import React, {ChangeEvent} from 'react';
 import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
 import {StoreContext} from './index';
+import {addPostAC, updateNewPostTitleAC} from './redux/store';
 
 
 export const App = (props: any) => {
@@ -50,11 +51,13 @@ const Profile = (props: any) => {
                 (store) => {
                     const state = store.getState()
                     const {posts, newPostTitle} = state.profilePage
-                    const {updateNewPostTitle, addPost} = store
+                    const {dispatch} = store
                     const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-                        updateNewPostTitle.bind(store)(e.currentTarget.value)
+                        dispatch.bind(store)(updateNewPostTitleAC(e.currentTarget.value))
                     }
-
+                    const addPost = () => {
+                        dispatch.bind(store)(addPostAC())
+                    }
 
                     return (
                         <div className={'profile'}>
@@ -64,7 +67,7 @@ const Profile = (props: any) => {
                                 />
                             </div>
                             <div>
-                                <button onClick={addPost.bind(store)}>add post</button>
+                                <button onClick={addPost}>add post</button>
                             </div>
                             {
                                 posts.map(p => <div key={p.id}>
