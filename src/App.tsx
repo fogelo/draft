@@ -55,6 +55,7 @@ const Profile = (props: any) => {
                         updateNewPostTitle.bind(store)(e.currentTarget.value)
                     }
 
+
                     return (
                         <div className={'profile'}>
                             <div>
@@ -63,7 +64,7 @@ const Profile = (props: any) => {
                                 />
                             </div>
                             <div>
-                                <button>add post</button>
+                                <button onClick={addPost.bind(store)}>add post</button>
                             </div>
                             {
                                 posts.map(p => <div key={p.id}>

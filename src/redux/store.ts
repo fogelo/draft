@@ -48,6 +48,7 @@ export const store: StoreType = {
             title: this._state.profilePage.newPostTitle
         }
         this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
+        this._state.profilePage.newPostTitle = ''
         this._callSubscriber(this)
     },
     _callSubscriber() {
