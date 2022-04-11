@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ChangeEvent} from 'react';
 import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
 import {StoreContext} from './index';
@@ -49,10 +49,24 @@ const Profile = (props: any) => {
             {
                 (store) => {
                     const state = store.getState()
+                    const {posts, newPostTitle} = state.profilePage
+                    const {updateNewPostTitle, addPost} = store
+                    const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+                        updateNewPostTitle.bind(store)(e.currentTarget.value)
+                    }
+
                     return (
                         <div className={'profile'}>
+                            <div>
+                                <textarea value={newPostTitle}
+                                          onChange={onPostTitleChange}
+                                />
+                            </div>
+                            <div>
+                                <button>add post</button>
+                            </div>
                             {
-                                state.profilePage.posts.map(p => <div>
+                                posts.map(p => <div key={p.id}>
                                     {p.title}
                                 </div>)
                             }
