@@ -1,4 +1,5 @@
 import {v1} from 'uuid';
+import {profileReducer} from './profile-reducer';
 
 
 type PostType = {
@@ -6,7 +7,7 @@ type PostType = {
     title: string
 }
 
-type ProfilePageType = {
+export type ProfilePageType = {
     posts: PostType[]
     newPostTitle: string
 }
@@ -14,7 +15,7 @@ type StateType = {
     profilePage: ProfilePageType
 }
 
-type ActionType = UpdateNewPostTitleAT | AddPostAT
+export type ActionType = UpdateNewPostTitleAT | AddPostAT
 
 export const updateNewPostTitleAC = (newPostTitle: string): UpdateNewPostTitleAT => ({
     type: 'UPDATE-NEW-POST-TITLE',
@@ -57,22 +58,8 @@ export const store: StoreType = {
         return this._state
     },
     dispatch(action: ActionType) {
-        switch (action.type) {
-            case 'UPDATE-NEW-POST-TITLE': {
-                this._state.profilePage.newPostTitle = action.newPostTitle
-                this._callSubscriber(this)
-                return
-            }
-            case 'ADD-POST': {
-                const newPost = {
-                    id: v1(),
-                    title: this._state.profilePage.newPostTitle
-                }
-                this._state.profilePage.posts = [newPost, ...this._state.profilePage.posts]
-                this._state.profilePage.newPostTitle = ''
-                this._callSubscriber(this)
-            }
-        }
+        this._state.profilePage = profileReducer(this._state.profilePage, action)
+        this._callSubscriber(this)
     },
     _callSubscriber() {
     },
