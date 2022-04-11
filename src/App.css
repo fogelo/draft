@@ -1,41 +1,17 @@
-.App {
-
-}
-
-.Header {
-    background-color: antiquewhite;
-    height: 50px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.content {
-    display: flex;
-}
-
-.Menu {
-    flex: 0 0 20%;
-    background-color: #abc5ff;
-}
-
-.Main {
-    flex: 0 0 80%;
+.header {
     background-color: khaki;
 }
 
-.page {
-    border: 1px solid black;
-    margin: 0 2px;
+.main {
+    display: flex;
 }
 
-.currentPage {
-    font-weight: bold;
-    font-size: 20px;
+.menu {
+    background-color: aqua;
+    flex: 1 1 20%;
 }
 
-.preloader {
-    background-image: url("./img/preloader.gif");
-    background-position: center;
-    width: 100px;
-    height: 100px;
+.content {
+    background-color: burlywood;
+    flex: 1 1 80%;
 }

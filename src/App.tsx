@@ -1,35 +1,40 @@
 import React from 'react';
 import './App.css';
-import {Main} from './components/Main/Main';
-import {NavLink} from 'react-router-dom';
-import {HeaderContainer} from './components/Header';
 
-export class App extends React.Component<any> {
-    render() {
-        console.log('app')
-        return (
-            <div className="App">
-                <HeaderContainer/>
-                <div className={'content'}>
-                    <Menu/>
-                    <Main/>
-                </div>
-            </div>
-        );
-    }
-}
 
-export function Menu() {
-
+export const App = (props: any) => {
     return (
-        <div className="Menu">
-            <div>
-                <NavLink to={'profile'}>profile</NavLink>
-            </div>
-            <div>
-                <NavLink to={'users'}>users</NavLink>
+        <div className="App">
+            <Header/>
+            <div className={'main'}>
+                <Menu/>
+                <Content/>
             </div>
         </div>
     );
+
+}
+
+const Header = (props: any) => {
+    return (
+        <div className={'header'}>
+            Header
+        </div>
+    )
+}
+
+const Menu = (props: any) => {
+    return (
+        <div className={'menu'}>
+            Menu
+        </div>
+    )
+}
+const Content = (props: any) => {
+    return (
+        <div className={'content'}>
+            Main
+        </div>
+    )
 }
 
