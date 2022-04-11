@@ -7,7 +7,7 @@ import {BrowserRouter} from 'react-router-dom';
 import {store} from './redux/store';
 
 
-const StoreContext = createContext(store)
+export const StoreContext = createContext(store)
 
 ReactDOM.render(
     <BrowserRouter>

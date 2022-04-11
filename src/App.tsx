@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
+import {StoreContext} from './index';
 
 
 export const App = (props: any) => {
@@ -23,12 +24,11 @@ const Header = (props: any) => {
         </div>
     )
 }
-
 const Menu = (props: any) => {
     return (
         <div className={'menu'}>
-            <NavLink to={'/profile'}><Profile/></NavLink>
-            <NavLink to={'/users'}><Users/></NavLink>
+            <div><NavLink to={'/profile'}>profile</NavLink></div>
+            <div><NavLink to={'/users'}>users</NavLink></div>
         </div>
     )
 }
@@ -45,9 +45,22 @@ const Content = (props: any) => {
 }
 const Profile = (props: any) => {
     return (
-        <div className={'profile'}>
-            profile
-        </div>
+        <StoreContext.Consumer>
+            {
+                (store) => {
+                    const state = store.getState()
+                    return (
+                        <div className={'profile'}>
+                            {
+                                state.profilePage.posts.map(p => <div>
+                                    {p.title}
+                                </div>)
+                            }
+                        </div>
+                    )
+                }
+            }
+        </StoreContext.Consumer>
     )
 }
 const Users = (props: any) => {
