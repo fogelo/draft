@@ -67,16 +67,19 @@ const Menu = (props: any) => {
 type ProfilePropsType = {
     newPostTitle: string
     posts: PostType[]
-    onPostTitleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
+    updateNewPostTitle: (value: string) => void
     addPost: () => void
 }
 
 const Profile = (props: ProfilePropsType) => {
+    const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        props.updateNewPostTitle(e.currentTarget.value)
+    }
     return (
         <div className={'profile'}>
             <div>
                 <textarea value={props.newPostTitle}
-                          onChange={props.onPostTitleChange}
+                          onChange={onPostTitleChange}
                 />
             </div>
             <div>
@@ -101,8 +104,6 @@ export const Users = (props: any) => {
 }
 
 
-
-
 const mapStateToProps = (state: RootState) => {
     return {
         newPostTitle: state.profilePage.newPostTitle,
@@ -121,25 +122,27 @@ const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
     }
 }
 
-const connect = (mapStateToProps: any, mapDispatchToProps: any) => {
+function connect(mapStateToProps: any, mapDispatchToProps: any) {
     return (Component: any) => {
-        return (
-            <StoreContext.Consumer>
-                {
-                    (store) => {
-                        return (
-                            <Component {...mapStateToProps(store.getState())} {...mapDispatchToProps(store.dispatch)}/>
-                        )
+        return () => {
+            return (
+                <StoreContext.Consumer>
+                    {
+                        (store) => {
+                            return (
+                                <Component {...mapStateToProps(store.getState())} {...mapDispatchToProps(store.dispatch)}/>
+                            )
+                        }
                     }
-                }
-            </StoreContext.Consumer>
-
-        )
+                </StoreContext.Consumer>
+            )
+        }
     }
 }
-export const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(Profile)
 
-export const Content = (props: any) => {
+const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(Profile)
+
+function Content(props: any) {
     return (
         <div className={'content'}>
             <Routes>
