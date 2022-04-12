@@ -2,7 +2,7 @@ import {v1} from 'uuid';
 import {profileReducer} from './profile-reducer';
 
 
-type PostType = {
+export type PostType = {
     id: string
     title: string
 }

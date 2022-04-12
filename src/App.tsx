@@ -3,6 +3,7 @@ import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
 import {StoreContext} from './index';
 import {addPostAC, updateNewPostTitleAC} from './redux/profile-reducer';
+import {PostType} from './redux/store';
 
 
 export const App = (props: any) => {
@@ -37,14 +38,14 @@ const Content = (props: any) => {
     return (
         <div className={'content'}>
             <Routes>
-                <Route path={'/'} element={<Profile/>}/>
-                <Route path={'/profile'} element={<Profile/>}/>
+                <Route path={'/'} element={<ProfileContainer/>}/>
+                <Route path={'/profile'} element={<ProfileContainer/>}/>
                 <Route path={'/users'} element={<Users/>}/>
             </Routes>
         </div>
     )
 }
-const Profile = (props: any) => {
+const ProfileContainer = (props: any) => {
     return (
         <StoreContext.Consumer>
             {
@@ -60,27 +61,47 @@ const Profile = (props: any) => {
                     }
 
                     return (
-                        <div className={'profile'}>
-                            <div>
-                                <textarea value={newPostTitle}
-                                          onChange={onPostTitleChange}
-                                />
-                            </div>
-                            <div>
-                                <button onClick={addPost}>add post</button>
-                            </div>
-                            {
-                                posts.map(p => <div key={p.id}>
-                                    {p.title}
-                                </div>)
-                            }
-                        </div>
+                        <Profile newPostTitle={newPostTitle}
+                                 onPostTitleChange={onPostTitleChange}
+                                 addPost={addPost}
+                                 posts={posts}
+                        />
                     )
                 }
             }
         </StoreContext.Consumer>
     )
 }
+
+
+type ProfilePropsType = {
+    newPostTitle: string
+    posts: PostType[]
+    onPostTitleChange: (e: ChangeEvent<HTMLTextAreaElement>) => void
+    addPost: () => void
+}
+
+const Profile = (props: ProfilePropsType) => {
+    return (
+        <div className={'profile'}>
+            <div>
+                <textarea value={props.newPostTitle}
+                          onChange={props.onPostTitleChange}
+                />
+            </div>
+            <div>
+                <button onClick={props.addPost}>add post</button>
+            </div>
+            {
+                props.posts.map(p => <div key={p.id}>
+                    {p.title}
+                </div>)
+            }
+        </div>
+    )
+}
+
+
 const Users = (props: any) => {
     return (
         <div className={'users'}>

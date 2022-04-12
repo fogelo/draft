@@ -9,12 +9,21 @@ import {store} from './redux/redux-store';
 
 export const StoreContext = createContext(store)
 
+
+const Provider = (props: any) => {
+    return (
+        <StoreContext.Provider value={props.store}>
+            {props.children}
+        </StoreContext.Provider>
+    )
+}
+
 const renderApp = () => {
     ReactDOM.render(
         <BrowserRouter>
-            <StoreContext.Provider value={store}>
+            <Provider store={store}>
                 <App/>
-            </StoreContext.Provider>
+            </Provider>
         </BrowserRouter>
         ,
         document.getElementById('root')
