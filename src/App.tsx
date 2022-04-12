@@ -1,9 +1,10 @@
 import React, {ChangeEvent} from 'react';
 import './App.css';
-import {NavLink, Routes, Route} from 'react-router-dom';
+import {NavLink, Route, Routes} from 'react-router-dom';
 import {StoreContext} from './index';
 import {addPostAC, updateNewPostTitleAC} from './redux/profile-reducer';
-import {PostType} from './redux/store';
+import {ActionType, PostType} from './redux/store';
+import {RootState} from './redux/redux-store';
 
 
 export const App = (props: any) => {
@@ -34,44 +35,33 @@ const Menu = (props: any) => {
         </div>
     )
 }
-const Content = (props: any) => {
-    return (
-        <div className={'content'}>
-            <Routes>
-                <Route path={'/'} element={<ProfileContainer/>}/>
-                <Route path={'/profile'} element={<ProfileContainer/>}/>
-                <Route path={'/users'} element={<Users/>}/>
-            </Routes>
-        </div>
-    )
-}
-const ProfileContainer = (props: any) => {
-    return (
-        <StoreContext.Consumer>
-            {
-                (store) => {
-                    const state = store.getState()
-                    const {posts, newPostTitle} = state.profilePage
-                    const {dispatch} = store
-                    const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-                        dispatch.bind(store)(updateNewPostTitleAC(e.currentTarget.value))
-                    }
-                    const addPost = () => {
-                        dispatch.bind(store)(addPostAC())
-                    }
-
-                    return (
-                        <Profile newPostTitle={newPostTitle}
-                                 onPostTitleChange={onPostTitleChange}
-                                 addPost={addPost}
-                                 posts={posts}
-                        />
-                    )
-                }
-            }
-        </StoreContext.Consumer>
-    )
-}
+// const ProfileContainer = (props: any) => {
+//     return (
+//         <StoreContext.Consumer>
+//             {
+//                 (store) => {
+//                     const state = store.getState()
+//                     const {posts, newPostTitle} = state.profilePage
+//                     const {dispatch} = store
+//                     const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+//                         dispatch.bind(store)(updateNewPostTitleAC(e.currentTarget.value))
+//                     }
+//                     const addPost = () => {
+//                         dispatch.bind(store)(addPostAC())
+//                     }
+//
+//                     return (
+//                         <Profile newPostTitle={newPostTitle}
+//                                  onPostTitleChange={onPostTitleChange}
+//                                  addPost={addPost}
+//                                  posts={posts}
+//                         />
+//                     )
+//                 }
+//             }
+//         </StoreContext.Consumer>
+//     )
+// }
 
 
 type ProfilePropsType = {
@@ -102,7 +92,7 @@ const Profile = (props: ProfilePropsType) => {
 }
 
 
-const Users = (props: any) => {
+export const Users = (props: any) => {
     return (
         <div className={'users'}>
             users
@@ -110,3 +100,53 @@ const Users = (props: any) => {
     )
 }
 
+
+
+
+const mapStateToProps = (state: RootState) => {
+    return {
+        newPostTitle: state.profilePage.newPostTitle,
+        posts: state.profilePage.posts
+    }
+}
+
+const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
+    return {
+        updateNewPostTitle: (newPostTitle: string) => {
+            dispatch(updateNewPostTitleAC(newPostTitle))
+        },
+        addPost: () => {
+            dispatch(addPostAC())
+        },
+    }
+}
+
+const connect = (mapStateToProps: any, mapDispatchToProps: any) => {
+    return (Component: any) => {
+        return (
+            <StoreContext.Consumer>
+                {
+                    (store) => {
+                        return (
+                            <Component {...mapStateToProps(store.getState())} {...mapDispatchToProps(store.dispatch)}/>
+                        )
+                    }
+                }
+            </StoreContext.Consumer>
+
+        )
+    }
+}
+export const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(Profile)
+
+export const Content = (props: any) => {
+    return (
+        <div className={'content'}>
+            <Routes>
+                <Route path={'/'} element={<ProfileContainer/>}/>
+                <Route path={'/profile'} element={<ProfileContainer/>}/>
+                <Route path={'/users'} element={<Users/>}/>
+            </Routes>
+        </div>
+    )
+}

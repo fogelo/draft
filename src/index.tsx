@@ -21,9 +21,12 @@ const Provider = (props: any) => {
 const renderApp = () => {
     ReactDOM.render(
         <BrowserRouter>
-            <Provider store={store}>
+            <StoreContext.Provider value={store}>
                 <App/>
-            </Provider>
+            </StoreContext.Provider>
+            {/*<Provider store={store}>*/}
+            {/*    <App/>*/}
+            {/*</Provider>*/}
         </BrowserRouter>
         ,
         document.getElementById('root')
