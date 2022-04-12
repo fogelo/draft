@@ -1,10 +1,12 @@
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import './App.css';
 import {NavLink, Route, Routes} from 'react-router-dom';
 import {StoreContext} from './index';
-import {addPostAC, updateNewPostTitleAC} from './redux/profile-reducer';
-import {ActionType, PostType} from './redux/store';
+import {ProfileContainer} from './components/Profile';
 import {RootState} from './redux/redux-store';
+import {ActionType, setUsersAC, UserType} from './redux/users-reducer';
+import axios from 'axios';
+import {connect} from 'react-redux';
 
 
 export const App = (props: any) => {
@@ -35,112 +37,48 @@ const Menu = (props: any) => {
         </div>
     )
 }
-// const ProfileContainer = (props: any) => {
-//     return (
-//         <StoreContext.Consumer>
-//             {
-//                 (store) => {
-//                     const state = store.getState()
-//                     const {posts, newPostTitle} = state.profilePage
-//                     const {dispatch} = store
-//                     const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-//                         dispatch.bind(store)(updateNewPostTitleAC(e.currentTarget.value))
-//                     }
-//                     const addPost = () => {
-//                         dispatch.bind(store)(addPostAC())
-//                     }
-//
-//                     return (
-//                         <Profile newPostTitle={newPostTitle}
-//                                  onPostTitleChange={onPostTitleChange}
-//                                  addPost={addPost}
-//                                  posts={posts}
-//                         />
-//                     )
-//                 }
-//             }
-//         </StoreContext.Consumer>
-//     )
-// }
 
-
-type ProfilePropsType = {
-    newPostTitle: string
-    posts: PostType[]
-    updateNewPostTitle: (value: string) => void
-    addPost: () => void
+type UsersPropsType = {
+    users: UserType[]
+    setUsers: (users: UserType[]) => void
 }
 
-const Profile = (props: ProfilePropsType) => {
-    const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        props.updateNewPostTitle(e.currentTarget.value)
-    }
-    return (
-        <div className={'profile'}>
-            <div>
-                <textarea value={props.newPostTitle}
-                          onChange={onPostTitleChange}
-                />
-            </div>
-            <div>
-                <button onClick={props.addPost}>add post</button>
-            </div>
-            {
-                props.posts.map(p => <div key={p.id}>
-                    {p.title}
-                </div>)
+export class Users extends React.Component<UsersPropsType> {
+    componentDidMount() {
+        axios.get('https://social-network.samuraijs.com/api/1.0/users', {
+            withCredentials: true,
+            headers: {
+                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
             }
-        </div>
-    )
+        }).then(response => {
+            this.props.setUsers(response.data.items)
+        })
+    }
+
+    render() {
+        return (
+            <div className={'users'}>
+                {this.props.users.map(u => <div key={u.id}>
+                    {u.name}
+                </div>)}
+            </div>
+        )
+    }
 }
-
-
-export const Users = (props: any) => {
-    return (
-        <div className={'users'}>
-            users
-        </div>
-    )
-}
-
 
 const mapStateToProps = (state: RootState) => {
     return {
-        newPostTitle: state.profilePage.newPostTitle,
-        posts: state.profilePage.posts
+        users: state.usersPage.users
     }
 }
 
 const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
     return {
-        updateNewPostTitle: (newPostTitle: string) => {
-            dispatch(updateNewPostTitleAC(newPostTitle))
-        },
-        addPost: () => {
-            dispatch(addPostAC())
-        },
+        setUsers: (users: UserType[]) => dispatch(setUsersAC(users))
     }
 }
 
-function connect(mapStateToProps: any, mapDispatchToProps: any) {
-    return (Component: any) => {
-        return () => {
-            return (
-                <StoreContext.Consumer>
-                    {
-                        (store) => {
-                            return (
-                                <Component {...mapStateToProps(store.getState())} {...mapDispatchToProps(store.dispatch)}/>
-                            )
-                        }
-                    }
-                </StoreContext.Consumer>
-            )
-        }
-    }
-}
-
-const ProfileContainer = connect(mapStateToProps, mapDispatchToProps)(Profile)
+export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(Users)
 
 function Content(props: any) {
     return (
@@ -148,7 +86,7 @@ function Content(props: any) {
             <Routes>
                 <Route path={'/'} element={<ProfileContainer/>}/>
                 <Route path={'/profile'} element={<ProfileContainer/>}/>
-                <Route path={'/users'} element={<Users/>}/>
+                <Route path={'/users'} element={<UsersContainer/>}/>
             </Routes>
         </div>
     )

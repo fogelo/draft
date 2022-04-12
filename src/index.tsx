@@ -5,28 +5,32 @@ import {App} from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
 import {store} from './redux/redux-store';
+import {Provider} from 'react-redux';
 
 
 export const StoreContext = createContext(store)
 
 
-const Provider = (props: any) => {
-    return (
-        <StoreContext.Provider value={props.store}>
-            {props.children}
-        </StoreContext.Provider>
-    )
-}
+// const Provider = (props: any) => {
+//     return (
+//         <StoreContext.Provider value={props.store}>
+//             {props.children}
+//         </StoreContext.Provider>
+//     )
+// }
 
 const renderApp = () => {
     ReactDOM.render(
         <BrowserRouter>
-            <StoreContext.Provider value={store}>
-                <App/>
-            </StoreContext.Provider>
+            {/*<StoreContext.Provider value={store}>*/}
+            {/*    <App/>*/}
+            {/*</StoreContext.Provider>*/}
             {/*<Provider store={store}>*/}
             {/*    <App/>*/}
             {/*</Provider>*/}
+            <Provider store={store}>
+                <App/>
+            </Provider>
         </BrowserRouter>
         ,
         document.getElementById('root')
