@@ -2,7 +2,7 @@ import React, {ChangeEvent} from 'react';
 import './App.css';
 import {NavLink, Routes, Route} from 'react-router-dom';
 import {StoreContext} from './index';
-import {addPostAC, updateNewPostTitleAC} from './redux/store';
+import {addPostAC, updateNewPostTitleAC} from './redux/profile-reducer';
 
 
 export const App = (props: any) => {
