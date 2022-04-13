@@ -1,45 +1,23 @@
 import React, {createContext} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {App} from './App';
+import {AppContainer} from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from 'react-router-dom';
 import {store} from './redux/redux-store';
 import {Provider} from 'react-redux';
 
 
-export const StoreContext = createContext(store)
+ReactDOM.render(
+    <BrowserRouter>
+        <Provider store={store}>
+            <AppContainer/>
+        </Provider>
+    </BrowserRouter>
+    ,
+    document.getElementById('root')
+);
 
-
-// const Provider = (props: any) => {
-//     return (
-//         <StoreContext.Provider value={props.store}>
-//             {props.children}
-//         </StoreContext.Provider>
-//     )
-// }
-
-const renderApp = () => {
-    ReactDOM.render(
-        <BrowserRouter>
-            {/*<StoreContext.Provider value={store}>*/}
-            {/*    <App/>*/}
-            {/*</StoreContext.Provider>*/}
-            {/*<Provider store={store}>*/}
-            {/*    <App/>*/}
-            {/*</Provider>*/}
-            <Provider store={store}>
-                <App/>
-            </Provider>
-        </BrowserRouter>
-        ,
-        document.getElementById('root')
-    );
-}
-
-renderApp()
-
-store.subscribe(renderApp)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

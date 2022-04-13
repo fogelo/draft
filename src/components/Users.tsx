@@ -32,7 +32,6 @@ export class Users extends React.Component<UsersPropsType> {
         const pagesCount = Array(Math.ceil(this.props.totalUsersCount / this.props.usersCount))
             .fill(0).map((e, i) => i + 1)
 
-        console.log(this.props)
         if (this.props.isFetching){
             return <Preloader/>
         }
@@ -48,8 +47,9 @@ export class Users extends React.Component<UsersPropsType> {
                     {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
                         <div>{u.name}</div>
                         <div>{u.id}</div>
-                        <NavLink to={`${u.id}`}>
-                            <div><img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
+                        <NavLink to={`/profile/${u.id}`}>
+                            <div>
+                                <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
                             </div>
                         </NavLink>
                         <div>{u.status}</div>

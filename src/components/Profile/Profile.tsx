@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {RootState} from '../../redux/redux-store';
 import {
     addPost, PostType,
@@ -8,11 +8,15 @@ import {connect} from 'react-redux';
 import {MyPosts} from './MyPosts';
 import axios from 'axios';
 import {Preloader} from '../common/Preloader';
+import {useMatch, useNavigate} from 'react-router-dom';
+import photo from '../../img/user.png';
+import {AuthDataType} from '../../redux/auth-reducer';
 
 type ProfilePropsType = {
     newPostTitle: string
     posts: PostType[]
     profile?: ProfileType
+    auth: AuthDataType
 
     updateNewPostTitle: (value: string) => void
     addPost: () => void
@@ -23,15 +27,18 @@ const ProfileInfo = (props: ProfileType) => {
         <div className={'profile'}>
             <div>{props.fullName}</div>
             <div>{props.userId}</div>
-            <div><img src={props.photos.small} alt="1"/></div>
+            <div>
+                <img src={props.photos.small ? props.photos.small : photo} alt="1" style={{width: '50px'}}/>
+            </div>
             <div>{props.aboutMe}</div>
         </div>
     )
 }
 const Profile = (props: ProfilePropsType) => {
-    if(!props.profile){
+    if (!props.profile) {
         return <Preloader/>
     }
+
     return (
         <div className={'profile'}>
             <ProfileInfo {...props.profile}/>
@@ -45,12 +52,12 @@ const Profile = (props: ProfilePropsType) => {
 }
 
 
-type ProfileAPIPropsType = ProfilePropsType & { setUserProfile: (profile: ProfileType) => void }
+type ProfileAPIPropsType = ProfilePropsType & { setUserProfile: (profile: ProfileType) => void } & { userId?: string }
 
 
 class ProfileAPI extends React.Component<ProfileAPIPropsType> {
     componentDidMount() {
-        axios.get('https://social-network.samuraijs.com/api/1.0/profile/2', {
+        axios.get(`https://social-network.samuraijs.com/api/1.0/profile/${this.props.userId}`, {
             withCredentials: true,
             headers: {
                 'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
@@ -65,13 +72,27 @@ class ProfileAPI extends React.Component<ProfileAPIPropsType> {
     }
 }
 
-
 const mapStateToProps = (state: RootState) => {
     return {
         newPostTitle: state.profilePage.newPostTitle,
         posts: state.profilePage.posts,
-        profile: state.profilePage.profile
+        profile: state.profilePage.profile,
+        auth: state.auth
     }
 }
 
-export const ProfileContainer = connect(mapStateToProps, {updateNewPostTitle, addPost, setUserProfile})(ProfileAPI)
+const ProfileRouter = (props: ProfileAPIPropsType) => {
+    const match = useMatch('/profile/:id');
+    if (match) {
+        return (
+            <ProfileAPI {...props} userId={match.params.id}/>
+        )
+    } else {
+        return (
+            <ProfileAPI {...props} userId={'23196'}/>
+        )
+    }
+}
+
+export const ProfileContainer = connect(mapStateToProps, {updateNewPostTitle, addPost, setUserProfile})(ProfileRouter)
+

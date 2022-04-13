@@ -98,3 +98,5 @@ export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCoun
 })
 export const setCurrentPageAC = (currentPage: number): SetCurrentPageAT => ({type: SET_CURRENT_PAGE, currentPage})
 export const toggleIsFetchingAC = (isFetching: boolean): ToggleIsFetchingAT => ({type: TOGGLE_IS_FETCHING, isFetching})
+
+
