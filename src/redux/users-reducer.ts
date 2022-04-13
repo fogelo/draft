@@ -1,5 +1,6 @@
 const SET_USERS = 'SET-USERS'
 const SET_TOTAL_USERS_COUNT = 'SET-TOTAL-USERS-COUNT'
+const SET_CURRENT_PAGE = 'SET-CURRENT-PAGE'
 
 
 type PhotosType = {
@@ -18,11 +19,15 @@ export type UserType = {
 type StateType = {
     users: UserType[]
     totalUsersCount: number
+    usersCount: number
+    currentPage: number
     error: string
 }
 const initState = {
     users: [],
     totalUsersCount: 0,
+    usersCount: 15,
+    currentPage: 1,
     error: '',
 
 }
@@ -41,6 +46,12 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
                 totalUsersCount: action.totalUsersCount
             }
         }
+        case SET_CURRENT_PAGE: {
+            return {
+                ...state,
+                currentPage: action.currentPage
+            }
+        }
         default: {
             return state
         }
@@ -48,7 +59,7 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
 }
 
 
-export type ActionType = SetUsersAT | SetTotalUsersCountAT
+export type ActionType = SetUsersAT | SetTotalUsersCountAT | SetCurrentPageAT
 
 
 type SetUsersAT = {
@@ -61,8 +72,14 @@ type SetTotalUsersCountAT = {
     totalUsersCount: number
 }
 
+type SetCurrentPageAT = {
+    type: 'SET-CURRENT-PAGE'
+    currentPage: number
+}
+
 export const setUsersAC = (users: UserType[]): SetUsersAT => ({type: SET_USERS, users})
 export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCountAT => ({
     type: SET_TOTAL_USERS_COUNT,
     totalUsersCount
 })
+export const setCurrentPageAC = (currentPage: number): SetCurrentPageAT => ({type: SET_CURRENT_PAGE, currentPage})

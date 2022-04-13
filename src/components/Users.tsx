@@ -1,4 +1,4 @@
-import {ActionType, setTotalUsersCountAC, setUsersAC, UserType} from '../redux/users-reducer';
+import {ActionType, setCurrentPageAC, setTotalUsersCountAC, setUsersAC, UserType} from '../redux/users-reducer';
 import {RootState} from '../redux/redux-store';
 import {connect} from 'react-redux';
 import React from 'react';
@@ -8,8 +8,12 @@ import photo from '../img/user.png'
 type UsersPropsType = {
     users: UserType[]
     totalUsersCount: number
+    usersCount: number
+    currentPage: number
+
     setUsers: (users: UserType[]) => void
     setTotalUsersCount: (totalUsersCount: number) => void
+    setCurrentPage: (currentPage: number) => void
 }
 
 export class Users extends React.Component<UsersPropsType> {
@@ -25,11 +29,32 @@ export class Users extends React.Component<UsersPropsType> {
         })
     }
 
+    onPageChanged(currenPage: number) {
+        axios.get(`https://social-network.samuraijs.com/api/1.0/users?page=${currenPage}&count=${this.props.usersCount}`, {
+            withCredentials: true,
+            headers: {
+                'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+            }
+        }).then(response => {
+            this.props.setUsers(response.data.items)
+            this.props.setTotalUsersCount(response.data.totalCount)
+            this.props.setCurrentPage(currenPage)
+        })
+    }
+
     render() {
+        const pagesCount = Array(Math.ceil(this.props.totalUsersCount / this.props.usersCount))
+            .fill(0).map((e, i) => i + 1)
 
         return (
             <div className={'users'}>
-                {this.props.totalUsersCount}
+                <div>{this.props.totalUsersCount}</div>
+                {pagesCount.map(e => <span key={e}
+                                           className={`page ${e === this.props.currentPage ? 'currentPage' : ''}`}
+                                           onClick={()=>this.onPageChanged(e)}
+                >
+                    {e}
+                </span>)}
                 {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
                     <div>{u.name}</div>
                     <div>{u.id}</div>
@@ -44,13 +69,16 @@ export class Users extends React.Component<UsersPropsType> {
 const mapStateToProps = (state: RootState) => {
     return {
         users: state.usersPage.users,
-        totalUsersCount: state.usersPage.totalUsersCount
+        totalUsersCount: state.usersPage.totalUsersCount,
+        usersCount: state.usersPage.usersCount,
+        currentPage: state.usersPage.currentPage
     }
 }
 const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
     return {
         setUsers: (users: UserType[]) => dispatch(setUsersAC(users)),
-        setTotalUsersCount: (totalUsersCount: number) => dispatch(setTotalUsersCountAC(totalUsersCount))
+        setTotalUsersCount: (totalUsersCount: number) => dispatch(setTotalUsersCountAC(totalUsersCount)),
+        setCurrentPage: (currentPage: number) => dispatch(setCurrentPageAC(currentPage))
     }
 }
 export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(Users)
