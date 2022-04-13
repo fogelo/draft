@@ -1,4 +1,5 @@
 const SET_USERS = 'SET-USERS'
+const SET_TOTAL_USERS_COUNT = 'SET-TOTAL-USERS-COUNT'
 
 
 type PhotosType = {
@@ -16,13 +17,14 @@ export type UserType = {
 
 type StateType = {
     users: UserType[]
-    totalCount: number
+    totalUsersCount: number
     error: string
 }
 const initState = {
     users: [],
-    totalCount: 0,
-    error: ''
+    totalUsersCount: 0,
+    error: '',
+
 }
 
 export const usersReducer = (state: StateType = initState, action: ActionType) => {
@@ -33,6 +35,12 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
                 users: action.users
             }
         }
+        case SET_TOTAL_USERS_COUNT: {
+            return {
+                ...state,
+                totalUsersCount: action.totalUsersCount
+            }
+        }
         default: {
             return state
         }
@@ -40,7 +48,7 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
 }
 
 
-export type ActionType = SetUsersAT
+export type ActionType = SetUsersAT | SetTotalUsersCountAT
 
 
 type SetUsersAT = {
@@ -48,4 +56,13 @@ type SetUsersAT = {
     users: UserType[]
 }
 
+type SetTotalUsersCountAT = {
+    type: 'SET-TOTAL-USERS-COUNT'
+    totalUsersCount: number
+}
+
 export const setUsersAC = (users: UserType[]): SetUsersAT => ({type: SET_USERS, users})
+export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCountAT => ({
+    type: SET_TOTAL_USERS_COUNT,
+    totalUsersCount
+})
