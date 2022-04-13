@@ -14,9 +14,48 @@ type UsersPropsType = {
     setUsers: (users: UserType[]) => void
     setTotalUsersCount: (totalUsersCount: number) => void
     setCurrentPage: (currentPage: number) => void
+    onPageChanged: (currentPage: number) => void
 }
 
 export class Users extends React.Component<UsersPropsType> {
+    render() {
+        const pagesCount = Array(Math.ceil(this.props.totalUsersCount / this.props.usersCount))
+            .fill(0).map((e, i) => i + 1)
+
+        return (
+            <div className={'users'}>
+                <div>{this.props.totalUsersCount}</div>
+                {pagesCount.map(e => <span key={e}
+                                           className={`page ${e === this.props.currentPage ? 'currentPage' : ''}`}
+                                           onClick={() => this.props.onPageChanged(e)}
+                >
+                    {e}
+                </span>)}
+                {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
+                    <div>{u.name}</div>
+                    <div>{u.id}</div>
+                    <div><img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/></div>
+                    <div>{u.status}</div>
+                </div>)}
+            </div>
+        )
+    }
+}
+
+
+
+
+type UsersAPIPropsType = {
+    users: UserType[]
+    totalUsersCount: number
+    usersCount: number
+    currentPage: number
+
+    setUsers: (users: UserType[]) => void
+    setTotalUsersCount: (totalUsersCount: number) => void
+    setCurrentPage: (currentPage: number) => void
+}
+export class UsersAPI extends React.Component<UsersAPIPropsType> {
     componentDidMount() {
         axios.get('https://social-network.samuraijs.com/api/1.0/users', {
             withCredentials: true,
@@ -43,28 +82,11 @@ export class Users extends React.Component<UsersPropsType> {
     }
 
     render() {
-        const pagesCount = Array(Math.ceil(this.props.totalUsersCount / this.props.usersCount))
-            .fill(0).map((e, i) => i + 1)
-
-        return (
-            <div className={'users'}>
-                <div>{this.props.totalUsersCount}</div>
-                {pagesCount.map(e => <span key={e}
-                                           className={`page ${e === this.props.currentPage ? 'currentPage' : ''}`}
-                                           onClick={()=>this.onPageChanged(e)}
-                >
-                    {e}
-                </span>)}
-                {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
-                    <div>{u.name}</div>
-                    <div>{u.id}</div>
-                    <div><img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/></div>
-                    <div>{u.status}</div>
-                </div>)}
-            </div>
-        )
+        return <Users {...this.props} onPageChanged={this.onPageChanged.bind(this)}/>
     }
 }
+
+
 
 const mapStateToProps = (state: RootState) => {
     return {
@@ -81,4 +103,4 @@ const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
         setCurrentPage: (currentPage: number) => dispatch(setCurrentPageAC(currentPage))
     }
 }
-export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(Users)
+export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
