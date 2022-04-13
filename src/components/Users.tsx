@@ -12,6 +12,7 @@ import React from 'react';
 import axios from 'axios';
 import photo from '../img/user.png'
 import {Preloader} from './common/Preloader';
+import {NavLink} from 'react-router-dom';
 
 type UsersPropsType = {
     users: UserType[]
@@ -47,7 +48,10 @@ export class Users extends React.Component<UsersPropsType> {
                     {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
                         <div>{u.name}</div>
                         <div>{u.id}</div>
-                        <div><img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/></div>
+                        <NavLink to={`${u.id}`}>
+                            <div><img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
+                            </div>
+                        </NavLink>
                         <div>{u.status}</div>
                     </div>)}
                 </div>

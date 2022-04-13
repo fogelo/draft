@@ -1,33 +1,43 @@
 import {v1} from 'uuid';
 
 
-type PostType = {
+export type PostType = {
     id: string
     title: string
 }
 
+type ContactsType = {
+    github: string
+    vk: string
+    facebook: string
+    instagram: string
+    twitter: string
+    website: string
+    youtube: string
+    mainLink: string
+}
+type PhotosType = {
+    small: string
+    large: string
+}
+export type ProfileType = {
+    aboutMe?: string
+    userId: number
+    lookingForAJob: boolean
+    lookingForAJobDescription: string
+    fullName: string
+    contacts: ContactsType
+    photos: PhotosType
+}
+
 export type ProfilePageType = {
+    profile?: ProfileType
     posts: PostType[]
     newPostTitle: string
 }
 
-export const updateNewPostTitleAC = (newPostTitle: string): UpdateNewPostTitleAT => ({
-    type: 'UPDATE-NEW-POST-TITLE',
-    newPostTitle
-})
-export const addPostAC = (): AddPostAT => ({type: 'ADD-POST'})
 
-type UpdateNewPostTitleAT = {
-    type: 'UPDATE-NEW-POST-TITLE'
-    newPostTitle: string
-}
-
-type AddPostAT = {
-    type: 'ADD-POST'
-}
-export type ActionType = UpdateNewPostTitleAT | AddPostAT
-
-const initState = {
+const initState: ProfilePageType = {
     posts: [
         {id: v1(), title: 'post 1'},
         {id: v1(), title: 'post 2'},
@@ -37,7 +47,7 @@ const initState = {
     newPostTitle: 'hard'
 }
 
-export const profileReducer = (state: ProfilePageType = initState, action: ActionType): ProfilePageType => {
+export const profileReducer = (state = initState, action: ActionType): ProfilePageType => {
     switch (action.type) {
         case 'UPDATE-NEW-POST-TITLE': {
             return {
@@ -55,8 +65,37 @@ export const profileReducer = (state: ProfilePageType = initState, action: Actio
                 posts: [newPost, ...state.posts]
             }
         }
+        case 'SET-PROFILE': {
+            return {
+                ...state,
+                profile: action.profile
+            }
+        }
         default: {
             return state
         }
     }
+}
+export const updateNewPostTitle = (newPostTitle: string): UpdateNewPostTitleAT => ({
+    type: 'UPDATE-NEW-POST-TITLE',
+    newPostTitle
+})
+export const addPost = (): AddPostAT => ({type: 'ADD-POST'})
+
+export const setUserProfile = (profile: ProfileType): SetProfileAT => ({type: 'SET-PROFILE', profile})
+
+export type ActionType = UpdateNewPostTitleAT | AddPostAT | SetProfileAT
+
+type SetProfileAT = {
+    type: 'SET-PROFILE'
+    profile: ProfileType
+}
+
+type UpdateNewPostTitleAT = {
+    type: 'UPDATE-NEW-POST-TITLE'
+    newPostTitle: string
+}
+
+type AddPostAT = {
+    type: 'ADD-POST'
 }
