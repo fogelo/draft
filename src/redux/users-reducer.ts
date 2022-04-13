@@ -1,6 +1,7 @@
 const SET_USERS = 'SET-USERS'
 const SET_TOTAL_USERS_COUNT = 'SET-TOTAL-USERS-COUNT'
 const SET_CURRENT_PAGE = 'SET-CURRENT-PAGE'
+const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING'
 
 
 type PhotosType = {
@@ -21,6 +22,7 @@ type StateType = {
     totalUsersCount: number
     usersCount: number
     currentPage: number
+    isFetching: boolean
     error: string
 }
 const initState = {
@@ -28,6 +30,7 @@ const initState = {
     totalUsersCount: 0,
     usersCount: 15,
     currentPage: 1,
+    isFetching: false,
     error: '',
 
 }
@@ -52,6 +55,12 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
                 currentPage: action.currentPage
             }
         }
+        case TOGGLE_IS_FETCHING: {
+            return {
+                ...state,
+                isFetching: action.isFetching
+            }
+        }
         default: {
             return state
         }
@@ -59,7 +68,7 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
 }
 
 
-export type ActionType = SetUsersAT | SetTotalUsersCountAT | SetCurrentPageAT
+export type ActionType = SetUsersAT | SetTotalUsersCountAT | SetCurrentPageAT | ToggleIsFetchingAT
 
 
 type SetUsersAT = {
@@ -77,9 +86,15 @@ type SetCurrentPageAT = {
     currentPage: number
 }
 
+type ToggleIsFetchingAT = {
+    type: 'TOGGLE_IS_FETCHING'
+    isFetching: boolean
+}
+
 export const setUsersAC = (users: UserType[]): SetUsersAT => ({type: SET_USERS, users})
 export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCountAT => ({
     type: SET_TOTAL_USERS_COUNT,
     totalUsersCount
 })
 export const setCurrentPageAC = (currentPage: number): SetCurrentPageAT => ({type: SET_CURRENT_PAGE, currentPage})
+export const toggleIsFetchingAC = (isFetching: boolean): ToggleIsFetchingAT => ({type: TOGGLE_IS_FETCHING, isFetching})
