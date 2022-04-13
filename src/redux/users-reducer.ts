@@ -2,6 +2,8 @@ const SET_USERS = 'SET-USERS'
 const SET_TOTAL_USERS_COUNT = 'SET-TOTAL-USERS-COUNT'
 const SET_CURRENT_PAGE = 'SET-CURRENT-PAGE'
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING'
+const FOLLOW = 'FOLLOW'
+const UNFOLLOW = 'UNFOLLOW'
 
 
 type PhotosType = {
@@ -61,6 +63,22 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
                 isFetching: action.isFetching
             }
         }
+        case FOLLOW: {
+            return {
+                ...state,
+                users: state.users.map(u => u.id === action.userId
+                    ? {...u, followed: true}
+                    : u)
+            }
+        }
+        case UNFOLLOW: {
+            return {
+                ...state,
+                users: state.users.map(u => u.id === action.userId
+                    ? {...u, followed: false}
+                    : u)
+            }
+        }
         default: {
             return state
         }
@@ -68,7 +86,13 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
 }
 
 
-export type ActionType = SetUsersAT | SetTotalUsersCountAT | SetCurrentPageAT | ToggleIsFetchingAT
+export type ActionType =
+    SetUsersAT
+    | SetTotalUsersCountAT
+    | SetCurrentPageAT
+    | ToggleIsFetchingAT
+    | FollowAT
+    | UnfollowAT
 
 
 type SetUsersAT = {
@@ -90,6 +114,14 @@ type ToggleIsFetchingAT = {
     type: 'TOGGLE_IS_FETCHING'
     isFetching: boolean
 }
+type FollowAT = {
+    type: 'FOLLOW'
+    userId: number
+}
+type UnfollowAT = {
+    type: 'UNFOLLOW'
+    userId: number
+}
 
 export const setUsersAC = (users: UserType[]): SetUsersAT => ({type: SET_USERS, users})
 export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCountAT => ({
@@ -99,4 +131,5 @@ export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCoun
 export const setCurrentPageAC = (currentPage: number): SetCurrentPageAT => ({type: SET_CURRENT_PAGE, currentPage})
 export const toggleIsFetchingAC = (isFetching: boolean): ToggleIsFetchingAT => ({type: TOGGLE_IS_FETCHING, isFetching})
 
-
+export const followAC = (userId: number): FollowAT => ({type: FOLLOW, userId})
+export const unfollowAC = (userId: number): UnfollowAT => ({type: UNFOLLOW, userId})

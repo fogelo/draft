@@ -1,9 +1,9 @@
 import {
-    ActionType,
+    ActionType, followAC,
     setCurrentPageAC,
     setTotalUsersCountAC,
     setUsersAC,
-    toggleIsFetchingAC,
+    toggleIsFetchingAC, unfollowAC,
     UserType
 } from '../redux/users-reducer';
 import {RootState} from '../redux/redux-store';
@@ -25,6 +25,8 @@ type UsersPropsType = {
     setTotalUsersCount: (totalUsersCount: number) => void
     setCurrentPage: (currentPage: number) => void
     onPageChanged: (currentPage: number) => void
+    follow: (userId: number) => void
+    unfollow: (userId: number) => void
 }
 
 export class Users extends React.Component<UsersPropsType> {
@@ -32,30 +34,37 @@ export class Users extends React.Component<UsersPropsType> {
         const pagesCount = Array(Math.ceil(this.props.totalUsersCount / this.props.usersCount))
             .fill(0).map((e, i) => i + 1)
 
-        if (this.props.isFetching){
+        if (this.props.isFetching) {
             return <Preloader/>
         }
-            return (
-                <div className={'users'}>
-                    <div>{this.props.totalUsersCount}</div>
-                    {pagesCount.map(e => <span key={e}
-                                               className={`page ${e === this.props.currentPage ? 'currentPage' : ''}`}
-                                               onClick={() => this.props.onPageChanged(e)}
-                    >
+        const onFollowClick=(userId: number) => {
+            this.props.follow(userId)
+        }
+        const onUnfollowClick=(userId: number) => {
+            this.props.unfollow(userId)
+        }
+        return (
+            <div className={'users'}>
+                <div>{this.props.totalUsersCount}</div>
+                {pagesCount.map(e => <span key={e}
+                                           className={`page ${e === this.props.currentPage ? 'currentPage' : ''}`}
+                                           onClick={() => this.props.onPageChanged(e)}
+                >
                     {e}
                 </span>)}
-                    {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
-                        <div>{u.name}</div>
-                        <div>{u.id}</div>
-                        <NavLink to={`/profile/${u.id}`}>
-                            <div>
-                                <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
-                            </div>
-                        </NavLink>
-                        <div>{u.status}</div>
-                    </div>)}
-                </div>
-            )
+                {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
+                    <div>{u.name}</div>
+                    <div>{u.id}</div>
+                    <NavLink to={`/profile/${u.id}`} >
+                            <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
+                    </NavLink>
+                    <div>{u.status}</div>
+                    {u.followed
+                        ? <button onClick={()=>onUnfollowClick(u.id)}>unfollow</button>
+                        : <button onClick={()=>onFollowClick(u.id)}>follow</button>}
+                </div>)}
+            </div>
+        )
     }
 }
 
@@ -71,6 +80,8 @@ type UsersAPIPropsType = {
     setTotalUsersCount: (totalUsersCount: number) => void
     setCurrentPage: (currentPage: number) => void
     toggleIsFetching: (isFetching: boolean) => void
+    follow: (userId: number) => void
+    unfollow: (userId: number) => void
 }
 
 export class UsersAPI extends React.Component<UsersAPIPropsType> {
@@ -123,7 +134,9 @@ const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
         setUsers: (users: UserType[]) => dispatch(setUsersAC(users)),
         setTotalUsersCount: (totalUsersCount: number) => dispatch(setTotalUsersCountAC(totalUsersCount)),
         setCurrentPage: (currentPage: number) => dispatch(setCurrentPageAC(currentPage)),
-        toggleIsFetching: (isFetching: boolean) => dispatch(toggleIsFetchingAC(isFetching))
+        toggleIsFetching: (isFetching: boolean) => dispatch(toggleIsFetchingAC(isFetching)),
+        follow: (userId: number) => dispatch(followAC(userId)),
+        unfollow: (userId: number) => dispatch(unfollowAC(userId))
     }
 }
 export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
