@@ -37,12 +37,30 @@ export class Users extends React.Component<UsersPropsType> {
         if (this.props.isFetching) {
             return <Preloader/>
         }
-        const onFollowClick=(userId: number) => {
-            this.props.follow(userId)
+
+        const onFollowClick = (userId: number) => {
+            axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${userId}`, {}, {
+                withCredentials: true,
+                headers: {
+                    'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+                }
+            }).then(response => {
+                this.props.follow(userId)
+            })
+
+
         }
-        const onUnfollowClick=(userId: number) => {
-            this.props.unfollow(userId)
+        const onUnfollowClick = (userId: number) => {
+            axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${userId}`,  {
+                withCredentials: true,
+                headers: {
+                    'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
+                }
+            }).then(response => {
+                this.props.unfollow(userId)
+            })
         }
+
         return (
             <div className={'users'}>
                 <div>{this.props.totalUsersCount}</div>
@@ -55,13 +73,13 @@ export class Users extends React.Component<UsersPropsType> {
                 {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
                     <div>{u.name}</div>
                     <div>{u.id}</div>
-                    <NavLink to={`/profile/${u.id}`} >
-                            <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
+                    <NavLink to={`/profile/${u.id}`}>
+                        <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
                     </NavLink>
                     <div>{u.status}</div>
                     {u.followed
-                        ? <button onClick={()=>onUnfollowClick(u.id)}>unfollow</button>
-                        : <button onClick={()=>onFollowClick(u.id)}>follow</button>}
+                        ? <button onClick={() => onUnfollowClick(u.id)}>unfollow</button>
+                        : <button onClick={() => onFollowClick(u.id)}>follow</button>}
                 </div>)}
             </div>
         )
