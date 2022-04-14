@@ -22,7 +22,6 @@ type ProfilePropsType = {
 
 
 const ProfileInfo = (props: ProfileType) => {
-    console.log(props)
     return (
         <div className={'profile'}>
             <div>name: {props.fullName}</div>

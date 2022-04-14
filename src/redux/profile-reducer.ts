@@ -45,7 +45,7 @@ const initState: ProfilePageType = {
         {id: v1(), title: 'post 3'},
         {id: v1(), title: 'post 4'},
     ],
-    newPostTitle: 'hard',
+    newPostTitle: '',
     status: ''
 }
 
