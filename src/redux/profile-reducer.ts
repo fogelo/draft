@@ -34,6 +34,7 @@ export type ProfilePageType = {
     profile?: ProfileType
     posts: PostType[]
     newPostTitle: string
+    status: string
 }
 
 
@@ -44,7 +45,8 @@ const initState: ProfilePageType = {
         {id: v1(), title: 'post 3'},
         {id: v1(), title: 'post 4'},
     ],
-    newPostTitle: 'hard'
+    newPostTitle: 'hard',
+    status: ''
 }
 
 export const profileReducer = (state = initState, action: ActionType): ProfilePageType => {
@@ -71,6 +73,12 @@ export const profileReducer = (state = initState, action: ActionType): ProfilePa
                 profile: action.profile
             }
         }
+        case 'SET-STATUS': {
+            return {
+                ...state,
+                status: action.status
+            }
+        }
         default: {
             return state
         }
@@ -84,7 +92,14 @@ export const addPost = (): AddPostAT => ({type: 'ADD-POST'})
 
 export const setUserProfile = (profile: ProfileType): SetProfileAT => ({type: 'SET-PROFILE', profile})
 
-export type ActionType = UpdateNewPostTitleAT | AddPostAT | SetProfileAT
+export const setStatus = (status: string): SetStatusAT => ({type: 'SET-STATUS', status})
+
+export type ActionType = UpdateNewPostTitleAT | AddPostAT | SetProfileAT | SetStatusAT
+
+type SetStatusAT = {
+    type: 'SET-STATUS'
+    status: string
+}
 
 type SetProfileAT = {
     type: 'SET-PROFILE'

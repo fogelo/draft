@@ -20,7 +20,7 @@ type UsersPropsType = {
     usersCount: number
     currentPage: number
     isFetching: boolean
-    followingInProgress: any
+    followingInProgress: number[]
 
     setUsers: (users: UserType[]) => void
     setTotalUsersCount: (totalUsersCount: number) => void
@@ -82,12 +82,14 @@ export class Users extends React.Component<UsersPropsType> {
                     {e}
                 </span>)}
                 {this.props.users.map(u => <div key={u.id} style={{margin: '10px 0px'}}>
-                    <div>{u.name}</div>
-                    <div>{u.id}</div>
-                    <NavLink to={`/profile/${u.id}`}>
-                        <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
-                    </NavLink>
-                    <div>{u.status}</div>
+                    <div>name: {u.name}</div>
+                    <div>id: {u.id}</div>
+                    <div>status: {u.status}</div>
+                    <div>
+                        <NavLink to={`/profile/${u.id}`}>
+                            <img src={u.photos.small ? u.photos.small : photo} alt="1" style={{width: '50px'}}/>
+                        </NavLink>
+                    </div>
                     {u.followed
                         ? <button onClick={() => onUnfollowClick(u.id)}
                                   disabled={this.props.followingInProgress.some((id: any) => id === u.id)}
@@ -108,7 +110,7 @@ type UsersAPIPropsType = {
     usersCount: number
     currentPage: number
     isFetching: boolean
-    followingInProgress: any
+    followingInProgress: number[]
 
     setUsers: (users: UserType[]) => void
     setTotalUsersCount: (totalUsersCount: number) => void

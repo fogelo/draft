@@ -1,16 +1,14 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {RootState} from '../../redux/redux-store';
-import {
-    addPost, PostType,
-    ProfileType, setUserProfile, updateNewPostTitle,
-} from '../../redux/profile-reducer';
+import {addPost, PostType, ProfileType, setUserProfile, updateNewPostTitle,} from '../../redux/profile-reducer';
 import {connect} from 'react-redux';
 import {MyPosts} from './MyPosts';
 import axios from 'axios';
 import {Preloader} from '../common/Preloader';
-import {useMatch, useNavigate} from 'react-router-dom';
+import {useMatch} from 'react-router-dom';
 import photo from '../../img/user.png';
 import {AuthDataType} from '../../redux/auth-reducer';
+import ProfileStatus from './ProfileStatus';
 
 type ProfilePropsType = {
     newPostTitle: string
@@ -22,15 +20,18 @@ type ProfilePropsType = {
     addPost: () => void
 }
 
+
 const ProfileInfo = (props: ProfileType) => {
+    console.log(props)
     return (
         <div className={'profile'}>
-            <div>{props.fullName}</div>
-            <div>{props.userId}</div>
+            <div>name: {props.fullName}</div>
+            <div>id: {props.userId}</div>
             <div>
                 <img src={props.photos.small ? props.photos.small : photo} alt="1" style={{width: '50px'}}/>
             </div>
-            <div>{props.aboutMe}</div>
+            <div>about me: {props.aboutMe}</div>
+            <ProfileStatus userId={props.userId}/>
         </div>
     )
 }

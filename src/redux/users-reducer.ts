@@ -28,7 +28,7 @@ type StateType = {
     currentPage: number
     isFetching: boolean
     error: string
-    followingInProgress: any
+    followingInProgress: number[]
 }
 const initState = {
     users: [],
@@ -84,8 +84,8 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
         }
         case FOLLOW_IN_PROGRESS: {
             return {
-                ...state, followingInProgress: state.followingInProgress.some((id: any) => id === action.userId)
-                    ? state.followingInProgress.filter((id:any) => id !== action.userId)
+                ...state, followingInProgress: state.followingInProgress.some(id => id === action.userId)
+                    ? state.followingInProgress.filter(id => id !== action.userId)
                     : [...state.followingInProgress, action.userId]
 
             }
