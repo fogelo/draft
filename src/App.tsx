@@ -56,7 +56,12 @@ const Header = (props: any) => {
     return (
         <div className={'header'} style={{display: 'flex', justifyContent: 'space-between'}}>
             <div>header</div>
-            <div>{props.login ? props.login : 'login'}</div>
+            <div>{
+                props.login
+                    ? props.login
+                    : <NavLink to={'/login'}>login</NavLink>
+            }
+            </div>
         </div>
     )
 }

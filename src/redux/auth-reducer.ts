@@ -4,7 +4,7 @@ export type AuthDataType = {
     login: string
 }
 
-export const authReducer = (state: AuthDataType, action: SetAuthDataAT) => {
+export const authReducer = (state: AuthDataType, action: ActionType) => {
     switch (action.type) {
         case 'SET-AUTH-DATA': {
             return {
@@ -20,9 +20,12 @@ export const authReducer = (state: AuthDataType, action: SetAuthDataAT) => {
     }
 }
 
+type ActionType = SetAuthDataAT
+
 type SetAuthDataAT = {
     type: 'SET-AUTH-DATA'
     authData: AuthDataType
 }
 
 export const setAuthData = (authData: AuthDataType): SetAuthDataAT => ({type: 'SET-AUTH-DATA', authData})
+
