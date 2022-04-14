@@ -4,6 +4,7 @@ const SET_CURRENT_PAGE = 'SET-CURRENT-PAGE'
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING'
 const FOLLOW = 'FOLLOW'
 const UNFOLLOW = 'UNFOLLOW'
+const FOLLOW_IN_PROGRESS = 'FOLLOW_IN_PROGRESS'
 
 
 type PhotosType = {
@@ -19,6 +20,7 @@ export type UserType = {
     followed: boolean
 }
 
+
 type StateType = {
     users: UserType[]
     totalUsersCount: number
@@ -26,6 +28,7 @@ type StateType = {
     currentPage: number
     isFetching: boolean
     error: string
+    followingInProgress: any
 }
 const initState = {
     users: [],
@@ -34,7 +37,7 @@ const initState = {
     currentPage: 1,
     isFetching: false,
     error: '',
-
+    followingInProgress: []
 }
 
 export const usersReducer = (state: StateType = initState, action: ActionType) => {
@@ -68,7 +71,7 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
                 ...state,
                 users: state.users.map(u => u.id === action.userId
                     ? {...u, followed: true}
-                    : u)
+                    : u),
             }
         }
         case UNFOLLOW: {
@@ -77,6 +80,14 @@ export const usersReducer = (state: StateType = initState, action: ActionType) =
                 users: state.users.map(u => u.id === action.userId
                     ? {...u, followed: false}
                     : u)
+            }
+        }
+        case FOLLOW_IN_PROGRESS: {
+            return {
+                ...state, followingInProgress: state.followingInProgress.some((id: any) => id === action.userId)
+                    ? state.followingInProgress.filter((id:any) => id !== action.userId)
+                    : [...state.followingInProgress, action.userId]
+
             }
         }
         default: {
@@ -92,7 +103,7 @@ export type ActionType =
     | SetCurrentPageAT
     | ToggleIsFetchingAT
     | FollowAT
-    | UnfollowAT
+    | UnfollowAT | FollowingInProgressAT
 
 
 type SetUsersAT = {
@@ -123,6 +134,12 @@ type UnfollowAT = {
     userId: number
 }
 
+type FollowingInProgressAT = {
+    type: 'FOLLOW_IN_PROGRESS'
+    userId: number
+}
+
+
 export const setUsersAC = (users: UserType[]): SetUsersAT => ({type: SET_USERS, users})
 export const setTotalUsersCountAC = (totalUsersCount: number): SetTotalUsersCountAT => ({
     type: SET_TOTAL_USERS_COUNT,
@@ -133,3 +150,5 @@ export const toggleIsFetchingAC = (isFetching: boolean): ToggleIsFetchingAT => (
 
 export const followAC = (userId: number): FollowAT => ({type: FOLLOW, userId})
 export const unfollowAC = (userId: number): UnfollowAT => ({type: UNFOLLOW, userId})
+
+export const setFollowingInProgressAC = (userId: number): FollowingInProgressAT => ({type: FOLLOW_IN_PROGRESS, userId})

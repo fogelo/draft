@@ -1,6 +1,6 @@
 import {
     ActionType, followAC,
-    setCurrentPageAC,
+    setCurrentPageAC, setFollowingInProgressAC,
     setTotalUsersCountAC,
     setUsersAC,
     toggleIsFetchingAC, unfollowAC,
@@ -20,6 +20,7 @@ type UsersPropsType = {
     usersCount: number
     currentPage: number
     isFetching: boolean
+    followingInProgress: any
 
     setUsers: (users: UserType[]) => void
     setTotalUsersCount: (totalUsersCount: number) => void
@@ -27,10 +28,12 @@ type UsersPropsType = {
     onPageChanged: (currentPage: number) => void
     follow: (userId: number) => void
     unfollow: (userId: number) => void
+    setFollowingInProgress: (userId: number) => void
 }
 
 export class Users extends React.Component<UsersPropsType> {
     render() {
+        console.log(this.props)
         const pagesCount = Array(Math.ceil(this.props.totalUsersCount / this.props.usersCount))
             .fill(0).map((e, i) => i + 1)
 
@@ -39,25 +42,33 @@ export class Users extends React.Component<UsersPropsType> {
         }
 
         const onFollowClick = (userId: number) => {
+            this.props.setFollowingInProgress(userId)
             axios.post(`https://social-network.samuraijs.com/api/1.0/follow/${userId}`, {}, {
                 withCredentials: true,
                 headers: {
                     'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
                 }
             }).then(response => {
-                this.props.follow(userId)
+                if (response.data.resultCode === 0) {
+                    this.props.setFollowingInProgress(userId)
+                    this.props.follow(userId)
+                }
             })
 
 
         }
         const onUnfollowClick = (userId: number) => {
-            axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${userId}`,  {
+            this.props.setFollowingInProgress(userId)
+            axios.delete(`https://social-network.samuraijs.com/api/1.0/follow/${userId}`, {
                 withCredentials: true,
                 headers: {
                     'API-KEY': 'b1356b5e-074b-4608-a733-39db627817e8'
                 }
             }).then(response => {
-                this.props.unfollow(userId)
+                if (response.data.resultCode === 0) {
+                    this.props.setFollowingInProgress(userId)
+                    this.props.unfollow(userId)
+                }
             })
         }
 
@@ -78,8 +89,12 @@ export class Users extends React.Component<UsersPropsType> {
                     </NavLink>
                     <div>{u.status}</div>
                     {u.followed
-                        ? <button onClick={() => onUnfollowClick(u.id)}>unfollow</button>
-                        : <button onClick={() => onFollowClick(u.id)}>follow</button>}
+                        ? <button onClick={() => onUnfollowClick(u.id)}
+                                  disabled={this.props.followingInProgress.some((id: any) => id === u.id)}
+                        >unfollow</button>
+                        : <button onClick={() => onFollowClick(u.id)}
+                                  disabled={this.props.followingInProgress.some((id: any) => id === u.id)}
+                        >follow</button>}
                 </div>)}
             </div>
         )
@@ -93,6 +108,7 @@ type UsersAPIPropsType = {
     usersCount: number
     currentPage: number
     isFetching: boolean
+    followingInProgress: any
 
     setUsers: (users: UserType[]) => void
     setTotalUsersCount: (totalUsersCount: number) => void
@@ -100,6 +116,7 @@ type UsersAPIPropsType = {
     toggleIsFetching: (isFetching: boolean) => void
     follow: (userId: number) => void
     unfollow: (userId: number) => void
+    setFollowingInProgress: (userId: number) => void
 }
 
 export class UsersAPI extends React.Component<UsersAPIPropsType> {
@@ -144,7 +161,8 @@ const mapStateToProps = (state: RootState) => {
         totalUsersCount: state.usersPage.totalUsersCount,
         usersCount: state.usersPage.usersCount,
         currentPage: state.usersPage.currentPage,
-        isFetching: state.usersPage.isFetching
+        isFetching: state.usersPage.isFetching,
+        followingInProgress: state.usersPage.followingInProgress
     }
 }
 const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
@@ -154,7 +172,8 @@ const mapDispatchToProps = (dispatch: (action: ActionType) => void) => {
         setCurrentPage: (currentPage: number) => dispatch(setCurrentPageAC(currentPage)),
         toggleIsFetching: (isFetching: boolean) => dispatch(toggleIsFetchingAC(isFetching)),
         follow: (userId: number) => dispatch(followAC(userId)),
-        unfollow: (userId: number) => dispatch(unfollowAC(userId))
+        unfollow: (userId: number) => dispatch(unfollowAC(userId)),
+        setFollowingInProgress: (userId: number) => dispatch(setFollowingInProgressAC(userId))
     }
 }
 export const UsersContainer = connect(mapStateToProps, mapDispatchToProps)(UsersAPI)
