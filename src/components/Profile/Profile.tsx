@@ -1,6 +1,6 @@
 import React from 'react';
 import {RootState} from '../../redux/redux-store';
-import {addPost, PostType, ProfileType, setUserProfile, updateNewPostTitle,} from '../../redux/profile-reducer';
+import {addPost, PostType, ProfileType, setUserProfile} from '../../redux/profile-reducer';
 import {connect} from 'react-redux';
 import {MyPosts} from './MyPosts';
 import axios from 'axios';
@@ -11,13 +11,10 @@ import {AuthDataType} from '../../redux/auth-reducer';
 import ProfileStatus from './ProfileStatus';
 
 type ProfilePropsType = {
-    newPostTitle: string
     posts: PostType[]
     profile?: ProfileType
     auth: AuthDataType
-
-    updateNewPostTitle: (value: string) => void
-    addPost: () => void
+    addPost: (newPostTitle: string) => void
 }
 
 
@@ -42,9 +39,7 @@ const Profile = (props: ProfilePropsType) => {
     return (
         <div className={'profile'}>
             <ProfileInfo {...props.profile}/>
-            <MyPosts newPostTitle={props.newPostTitle}
-                     posts={props.posts}
-                     updateNewPostTitle={props.updateNewPostTitle}
+            <MyPosts posts={props.posts}
                      addPost={props.addPost}
             />
         </div>
@@ -94,5 +89,5 @@ const ProfileRouter = (props: ProfileAPIPropsType) => {
     }
 }
 
-export const ProfileContainer = connect(mapStateToProps, {updateNewPostTitle, addPost, setUserProfile})(ProfileRouter)
+export const ProfileContainer = connect(mapStateToProps, {addPost, setUserProfile})(ProfileRouter)
 

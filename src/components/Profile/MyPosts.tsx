@@ -1,27 +1,19 @@
-import React, {ChangeEvent} from 'react';
+import React from 'react';
 import {PostType} from '../../redux/profile-reducer';
+import {Field, reduxForm} from 'redux-form';
 
 type MyPostsPropsType = {
-    newPostTitle: string
     posts: PostType[]
-    updateNewPostTitle: (value: string) => void
-    addPost: () => void
+    addPost: (newPostTitle: string) => void
 
 }
 export const MyPosts = (props: MyPostsPropsType) => {
-    const onPostTitleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        props.updateNewPostTitle(e.currentTarget.value)
+    const addPost = (formData: any) => {
+        props.addPost(formData.myPostTextarea)
     }
     return (
         <div>
-            <div>
-                <textarea value={props.newPostTitle}
-                          onChange={onPostTitleChange}
-                />
-            </div>
-            <div>
-                <button onClick={props.addPost}>add post</button>
-            </div>
+            <MyPostsReduxForm onSubmit={addPost}/>
             {
                 props.posts.map(p => <div key={p.id}>
                     {p.title}
@@ -30,3 +22,19 @@ export const MyPosts = (props: MyPostsPropsType) => {
         </div>
     )
 }
+
+const MyPostsForm = (props: any) => {
+    return (
+        <form onSubmit={props.handleSubmit}>
+            <div>
+                <Field component={'textarea'} name={'myPostTextarea'}/>
+            </div>
+            <div>
+                <button>add post</button>
+            </div>
+        </form>
+    )
+}
+const MyPostsReduxForm = reduxForm({
+    form: 'myPostsForm'
+})(MyPostsForm)

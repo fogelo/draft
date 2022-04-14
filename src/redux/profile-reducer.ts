@@ -51,16 +51,10 @@ const initState: ProfilePageType = {
 
 export const profileReducer = (state = initState, action: ActionType): ProfilePageType => {
     switch (action.type) {
-        case 'UPDATE-NEW-POST-TITLE': {
-            return {
-                ...state,
-                newPostTitle: action.newPostTitle
-            }
-        }
         case 'ADD-POST': {
             const newPost = {
                 id: v1(),
-                title: state.newPostTitle
+                title: action.newPostTitle
             }
             return {
                 ...state,
@@ -88,7 +82,7 @@ export const updateNewPostTitle = (newPostTitle: string): UpdateNewPostTitleAT =
     type: 'UPDATE-NEW-POST-TITLE',
     newPostTitle
 })
-export const addPost = (): AddPostAT => ({type: 'ADD-POST'})
+export const addPost = (newPostTitle: string): AddPostAT => ({type: 'ADD-POST', newPostTitle})
 
 export const setUserProfile = (profile: ProfileType): SetProfileAT => ({type: 'SET-PROFILE', profile})
 
@@ -113,4 +107,5 @@ type UpdateNewPostTitleAT = {
 
 type AddPostAT = {
     type: 'ADD-POST'
+    newPostTitle: string
 }
