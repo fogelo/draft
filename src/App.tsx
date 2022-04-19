@@ -1,10 +1,19 @@
 import './App.css';
 import {useReducer, useState} from 'react';
-import {addTaskAC, changeTaskStatusAC, changeTaskTitleAC, removeTaskAC, tasksReducer} from './redux/tasks-reducer';
+import {
+    addTaskAC,
+    changeTaskStatusAC,
+    changeTaskTitleAC,
+    removeTaskAC,
+    tasksReducer,
+    TaskType
+} from './redux/tasks-reducer';
 
 function App() {
+    //==============================
+    //tasks block
+    //==============================
     const [tasks, dispatch] = useReducer(tasksReducer, [])
-
     const addTask = (taskTitle: string) => {
         dispatch(addTaskAC(taskTitle))
     }
@@ -19,8 +28,34 @@ function App() {
         dispatch(changeTaskTitleAC(taskId, taskTitle))
     }
 
+    //==============================
+    //todolists block
+    //==============================
     return (
         <div className="App">
+            <Todolist tasks={tasks}
+                      addTask={addTask}
+                      changeTaskTitle={changeTaskTitle}
+                      removeTask={removeTask}
+                      changeTaskStatus={changeTaskStatus}/>
+        </div>
+    );
+}
+
+export default App;
+
+type TodolistPT = {
+    tasks: TaskType[]
+    addTask: (taskTitle: string) => void
+    changeTaskTitle: (taskId: string, taskTitle: string) => void
+    removeTask: (taskId: string) => void
+    changeTaskStatus: (taskId: string, isDone: boolean) => void
+}
+
+
+const Todolist = ({tasks, addTask, changeTaskTitle, removeTask, changeTaskStatus}: TodolistPT) => {
+    return (
+        <div>
             <AddItemForm addItem={addTask}/>
             <ul>
                 {tasks.map(t => {
@@ -39,10 +74,8 @@ function App() {
                 })}
             </ul>
         </div>
-    );
+    )
 }
-
-export default App;
 
 
 type AddItemPT = {
