@@ -8,36 +8,62 @@ import {
     tasksReducer,
     TaskType
 } from './redux/tasks-reducer';
+import {addTodolistAC, removeTodolistAC, todolistsReducer} from './redux/todolists-reducer';
 
 function App() {
     //==============================
     //tasks block
     //==============================
-    const [tasks, dispatch] = useReducer(tasksReducer, [])
-    const addTask = (taskTitle: string) => {
-        dispatch(addTaskAC(taskTitle))
+    const [tasks, dispatchToTasksReducer] = useReducer(tasksReducer, {})
+    const [todolists, dispatchToTodolistsReducer] = useReducer(todolistsReducer, [])
+    const addTask = (taskTitle: string, todolistId: string) => {
+        dispatchToTasksReducer(addTaskAC(taskTitle, todolistId))
     }
-    const removeTask = (taskId: string) => {
-        dispatch(removeTaskAC(taskId))
+    const removeTask = (taskId: string, todolistId: string) => {
+        dispatchToTasksReducer(removeTaskAC(taskId, todolistId))
     }
-    const changeTaskStatus = (taskId: string, isDone: boolean) => {
-        dispatch(changeTaskStatusAC(taskId, isDone))
+    const changeTaskStatus = (taskId: string, isDone: boolean, todolistId: string) => {
+        dispatchToTasksReducer(changeTaskStatusAC(taskId, isDone, todolistId))
     }
 
-    const changeTaskTitle = (taskId: string, taskTitle: string) => {
-        dispatch(changeTaskTitleAC(taskId, taskTitle))
+    const changeTaskTitle = (taskId: string, taskTitle: string, todolistId: string) => {
+        dispatchToTasksReducer(changeTaskTitleAC(taskId, taskTitle, todolistId))
     }
 
     //==============================
     //todolists block
     //==============================
+
+    const addTodolist = (todolistTitle: string) => {
+        const action = addTodolistAC(todolistTitle)
+        dispatchToTodolistsReducer(action)
+        dispatchToTasksReducer(action)
+    }
+
+    const removeTodolist = (todolistId: string) => {
+        const action = removeTodolistAC(todolistId)
+        dispatchToTodolistsReducer(action)
+        dispatchToTasksReducer(action)
+    }
+
     return (
         <div className="App">
-            <Todolist tasks={tasks}
-                      addTask={addTask}
-                      changeTaskTitle={changeTaskTitle}
-                      removeTask={removeTask}
-                      changeTaskStatus={changeTaskStatus}/>
+            <AddItemForm addItem={addTodolist}/>
+            {todolists.map(tl => {
+                return (
+                    <Todolist key={tl.id}
+                              todolistTitle={tl.title}
+                              todolistId={tl.id}
+                              removeTodolist={removeTodolist}
+
+                              tasks={tasks[tl.id]}
+                              addTask={addTask}
+                              changeTaskTitle={changeTaskTitle}
+                              removeTask={removeTask}
+                              changeTaskStatus={changeTaskStatus}/>
+                )
+            })}
+
         </div>
     );
 }
@@ -45,28 +71,36 @@ function App() {
 export default App;
 
 type TodolistPT = {
+    todolistId: string
+    todolistTitle: string
+    removeTodolist: (todolistId: string) => void
+
     tasks: TaskType[]
-    addTask: (taskTitle: string) => void
-    changeTaskTitle: (taskId: string, taskTitle: string) => void
-    removeTask: (taskId: string) => void
-    changeTaskStatus: (taskId: string, isDone: boolean) => void
+    addTask: (taskTitle: string, todolistId: string) => void
+    changeTaskTitle: (taskId: string, taskTitle: string, todolistId: string) => void
+    removeTask: (taskId: string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, isDone: boolean, todolistId: string) => void
 }
 
 
-const Todolist = ({tasks, addTask, changeTaskTitle, removeTask, changeTaskStatus}: TodolistPT) => {
+const Todolist = (props: TodolistPT) => {
+    const addTask = (taskTitle: string) => {
+        props.addTask(taskTitle, props.todolistId)
+    }
     return (
         <div>
+            <div>{props.todolistTitle}</div>
             <AddItemForm addItem={addTask}/>
             <ul>
-                {tasks.map(t => {
+                {props.tasks.map(t => {
                     const changeTitle = (title: string) => {
-                        changeTaskTitle(t.id, title)
+                        props.changeTaskTitle(t.id, title, props.todolistId)
                     }
                     return (
                         <li key={t.id}>
-                            <button onClick={() => removeTask(t.id)}>x</button>
+                            <button onClick={() => props.removeTask(t.id, props.todolistId)}>x</button>
                             <input type="checkbox"
-                                   onClick={(e) => changeTaskStatus(t.id, e.currentTarget.checked)}
+                                   onClick={(e) => props.changeTaskStatus(t.id, e.currentTarget.checked, props.todolistId)}
                             />
                             <EditableSpan title={t.title} changeTitle={changeTitle}/>
                         </li>
