@@ -13,10 +13,20 @@ export const tasksReducer = (state: Array<TaskType> = initState, action: ActionT
         case 'add-task': {
             const newTask = {
                 id: v1(),
-                title: action.title,
+                title: action.taskTitle,
                 isDone: false
             }
-            return state
+            return [...state, newTask]
+        }
+        case 'remove-task': {
+            return state.filter(t => t.id !== action.taskId)
+        }
+        case 'change-task-status': {
+            const task = state.find(t => t.id === action.taskId)
+            if (task) {
+                task.isDone = action.isDone
+            }
+            return [...state]
         }
         default: {
             return state
@@ -24,11 +34,29 @@ export const tasksReducer = (state: Array<TaskType> = initState, action: ActionT
     }
 }
 
-type ActionType = AddTaskAT
+type ActionType = AddTaskAT | removeTaskAT | changeTaskStatusAT
 
 type AddTaskAT = {
     type: 'add-task'
-    title: string
+    taskTitle: string
 }
 
-export const addTaskAC = (title: string) => ({type: 'add-task', title})
+type removeTaskAT = {
+    type: 'remove-task'
+    taskId: string
+}
+
+type changeTaskStatusAT = {
+    type: 'change-task-status'
+    taskId: string
+    isDone: boolean
+}
+
+export const addTaskAC = (taskTitle: string): AddTaskAT => ({type: 'add-task', taskTitle})
+export const removeTaskAC = (taskId: string): removeTaskAT => ({type: 'remove-task', taskId})
+export const changeTaskStatusAC = (taskId: string, isDone: boolean): changeTaskStatusAT => ({
+    type: 'change-task-status',
+    taskId,
+    isDone
+})
+
