@@ -8,7 +8,7 @@ import {
     tasksReducer,
     TaskType
 } from './redux/tasks-reducer';
-import {addTodolistAC, removeTodolistAC, todolistsReducer} from './redux/todolists-reducer';
+import {addTodolistAC, changeTodolistTitleAC, removeTodolistAC, todolistsReducer} from './redux/todolists-reducer';
 
 function App() {
     //==============================
@@ -46,6 +46,10 @@ function App() {
         dispatchToTasksReducer(action)
     }
 
+    const changeTodolistTitle = (title: string, todolistId: string) => {
+        dispatchToTodolistsReducer(changeTodolistTitleAC(title, todolistId))
+    }
+
     return (
         <div className="App">
             <AddItemForm addItem={addTodolist}/>
@@ -55,6 +59,7 @@ function App() {
                               todolistTitle={tl.title}
                               todolistId={tl.id}
                               removeTodolist={removeTodolist}
+                              changeTodolistTitle={changeTodolistTitle}
 
                               tasks={tasks[tl.id]}
                               addTask={addTask}
@@ -74,6 +79,7 @@ type TodolistPT = {
     todolistId: string
     todolistTitle: string
     removeTodolist: (todolistId: string) => void
+    changeTodolistTitle: (title: string, todolistId: string) => void
 
     tasks: TaskType[]
     addTask: (taskTitle: string, todolistId: string) => void
@@ -87,9 +93,13 @@ const Todolist = (props: TodolistPT) => {
     const addTask = (taskTitle: string) => {
         props.addTask(taskTitle, props.todolistId)
     }
+    const changeTitle = (title: string) => {
+        props.changeTodolistTitle(title, props.todolistId)
+    }
     return (
         <div>
-            <div>{props.todolistTitle}</div>
+            <div><EditableSpan title={props.todolistTitle} changeTitle={changeTitle}/></div>
+            <button onClick={() => props.removeTodolist(props.todolistId)}>x</button>
             <AddItemForm addItem={addTask}/>
             <ul>
                 {props.tasks.map(t => {
