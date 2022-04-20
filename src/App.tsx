@@ -8,7 +8,13 @@ import {
     tasksReducer,
     TaskType
 } from './redux/tasks-reducer';
-import {addTodolistAC, changeTodolistTitleAC, removeTodolistAC, todolistsReducer} from './redux/todolists-reducer';
+import {
+    addTodolistAC, changeFilterAC,
+    changeTodolistTitleAC,
+    FilterType,
+    removeTodolistAC,
+    todolistsReducer
+} from './redux/todolists-reducer';
 
 function App() {
     //==============================
@@ -50,24 +56,31 @@ function App() {
         dispatchToTodolistsReducer(changeTodolistTitleAC(title, todolistId))
     }
 
+    const changeFilter = (filter: FilterType, todolistId: string) => {
+        dispatchToTodolistsReducer(changeFilterAC(filter, todolistId))
+    }
     return (
         <div className="App">
             <AddItemForm addItem={addTodolist}/>
-            {todolists.map(tl => {
-                return (
-                    <Todolist key={tl.id}
-                              todolistTitle={tl.title}
-                              todolistId={tl.id}
-                              removeTodolist={removeTodolist}
-                              changeTodolistTitle={changeTodolistTitle}
+            <div className={'todolists'}>
+                {todolists.map(tl => {
+                    return (
+                        <Todolist key={tl.id}
+                                  todolistTitle={tl.title}
+                                  todolistId={tl.id}
+                                  removeTodolist={removeTodolist}
+                                  changeTodolistTitle={changeTodolistTitle}
+                                  filter={tl.filter}
+                                  changeFilter={changeFilter}
 
-                              tasks={tasks[tl.id]}
-                              addTask={addTask}
-                              changeTaskTitle={changeTaskTitle}
-                              removeTask={removeTask}
-                              changeTaskStatus={changeTaskStatus}/>
-                )
-            })}
+                                  tasks={tasks[tl.id]}
+                                  addTask={addTask}
+                                  changeTaskTitle={changeTaskTitle}
+                                  removeTask={removeTask}
+                                  changeTaskStatus={changeTaskStatus}/>
+                    )
+                })}
+            </div>
 
         </div>
     );
@@ -80,6 +93,8 @@ type TodolistPT = {
     todolistTitle: string
     removeTodolist: (todolistId: string) => void
     changeTodolistTitle: (title: string, todolistId: string) => void
+    filter: string
+    changeFilter: (filter: FilterType, todolistId: string) => void
 
     tasks: TaskType[]
     addTask: (taskTitle: string, todolistId: string) => void
@@ -96,13 +111,23 @@ const Todolist = (props: TodolistPT) => {
     const changeTitle = (title: string) => {
         props.changeTodolistTitle(title, props.todolistId)
     }
+
+    let filteredTasks = props.tasks
+    if (props.filter === 'active') {
+        filteredTasks = filteredTasks.filter(t => !t.isDone)
+    }
+    if (props.filter === 'completed') {
+        filteredTasks = filteredTasks.filter(t => t.isDone)
+    }
     return (
         <div>
-            <div><EditableSpan title={props.todolistTitle} changeTitle={changeTitle}/></div>
+            <EditableSpan title={props.todolistTitle} changeTitle={changeTitle}/>
             <button onClick={() => props.removeTodolist(props.todolistId)}>x</button>
-            <AddItemForm addItem={addTask}/>
+            <div>
+                <AddItemForm addItem={addTask}/>
+            </div>
             <ul>
-                {props.tasks.map(t => {
+                {filteredTasks.map(t => {
                     const changeTitle = (title: string) => {
                         props.changeTaskTitle(t.id, title, props.todolistId)
                     }
@@ -110,13 +135,17 @@ const Todolist = (props: TodolistPT) => {
                         <li key={t.id}>
                             <button onClick={() => props.removeTask(t.id, props.todolistId)}>x</button>
                             <input type="checkbox"
-                                   onClick={(e) => props.changeTaskStatus(t.id, e.currentTarget.checked, props.todolistId)}
+                                   checked={t.isDone}
+                                   onChange={(e) => props.changeTaskStatus(t.id, e.currentTarget.checked, props.todolistId)}
                             />
                             <EditableSpan title={t.title} changeTitle={changeTitle}/>
                         </li>
                     )
                 })}
             </ul>
+            <button onClick={() => props.changeFilter('all', props.todolistId)}>all</button>
+            <button onClick={() => props.changeFilter('active', props.todolistId)}>active</button>
+            <button onClick={() => props.changeFilter('completed', props.todolistId)}>completed</button>
         </div>
     )
 }

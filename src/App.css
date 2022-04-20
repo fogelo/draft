@@ -13,3 +13,9 @@ ul {
   margin: 0;
   padding: 0;
 }
+
+.todolists {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
