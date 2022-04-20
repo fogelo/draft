@@ -7,13 +7,13 @@ export type TaskType = {
     isDone: boolean
 }
 
-type StateType = {
+export type TaskStateType = {
     [key: string]: TaskType[]
 }
 
-const initState: StateType = {}
+const initState: TaskStateType = {}
 
-export const tasksReducer = (state: StateType = initState, action: ActionType): StateType => {
+export const tasksReducer = (state: TaskStateType = initState, action: ActionType): TaskStateType => {
     switch (action.type) {
         case 'add-task': {
             const newTask = {

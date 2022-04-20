@@ -3,7 +3,7 @@ import {v1} from 'uuid';
 export type FilterType = 'all' | 'active' | 'completed'
 
 
-type TodolistType = {
+export type TodolistType = {
     id: string
     title: string
     filter: FilterType
