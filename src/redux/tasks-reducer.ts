@@ -1,5 +1,12 @@
 import {v1} from 'uuid';
 
+enum TaskStatus {
+    New,
+    InProgress,
+    Completed,
+    Draft
+}
+
 const initialState: Array<TaskType> = []
 
 export const tasksReducer = (state = initialState, action: ActionType) => {
@@ -20,13 +27,6 @@ export const addTaskAC = (title: string) => ({type: 'add-task', title} as const)
 //types
 
 type ActionType = ReturnType<typeof addTaskAC>
-
-enum TaskStatus {
-    New,
-    InProgress,
-    Completed,
-    Draft
-}
 
 export type TaskType = {
     id: string
