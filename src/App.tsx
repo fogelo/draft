@@ -4,9 +4,21 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateT} from './redux/store';
 import {addTaskAC, TaskType} from './redux/tasks-reducer';
 import {useFormik} from 'formik';
-import {Container, TextField} from '@mui/material';
+import {
+    Button, Checkbox,
+    Container, List, ListItem, ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Paper,
+    Stack,
+    styled,
+    TextField,
+    Typography
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import {NavBar} from './components/NavBar';
+import AddIcon from '@mui/icons-material/Add';
+import {grey} from '@mui/material/colors';
 
 
 function App() {
@@ -17,14 +29,27 @@ function App() {
         dispatch(addTaskAC(title))
     }
 
+
     return (
         <>
             <NavBar/>
-            <Container className="App">
+            <Box sx={{maxWidth: 500, margin: '0 auto 20px'}}>
+                <Typography color={grey[700]}>Создать Todolist</Typography>
                 <AddItemForm addItem={addTask}/>
-                <ul>
-                    {tasks.map(t => <li key={t.id}>{t.title}</li>)}
-                </ul>
+            </Box>
+            <Container className="App">
+                <Paper elevation={3} sx={{maxWidth: 300, padding: 1}}>
+                    <Typography color={grey[700]}>Создать Task</Typography>
+                    <AddItemForm addItem={addTask}/>
+                    <List>
+                        {tasks.map(t => (
+                            <ListItem key={t.id}>
+                                <ListItemText primary={t.title}/>
+                                <Checkbox/>
+                            </ListItem>
+                        ))}
+                    </List>
+                </Paper>
             </Container>
         </>
     );
@@ -36,7 +61,7 @@ type AddItemFormPT = {
     addItem: (title: string) => void
 }
 
-const AddItemForm: FC<AddItemFormPT> = ({addItem}) => {
+const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
     const formik = useFormik({
         initialValues: {
             title: '',
@@ -49,12 +74,24 @@ const AddItemForm: FC<AddItemFormPT> = ({addItem}) => {
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
-                <TextField
-                    name={'title'}
-                    onChange={formik.handleChange}
-                    value={formik.values.title}
-                />
-                <button type={'submit'}>+</button>
+                <Stack direction={'row'}>
+                    <TextField
+                        variant={'outlined'}
+                        size={'small'}
+                        name={'title'}
+                        onChange={formik.handleChange}
+                        value={formik.values.title}
+                        fullWidth
+
+                    />
+                    <Button
+                        variant={'contained'}
+                        size={'small'}
+                        type={'submit'}
+                    >
+                        <AddIcon fontSize={'small'}/>
+                    </Button>
+                </Stack>
             </form>
         </>
     )
