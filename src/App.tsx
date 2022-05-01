@@ -6,12 +6,11 @@ import {addTaskAC, TaskType} from './redux/tasks-reducer';
 import {useFormik} from 'formik';
 import {
     Button, Checkbox,
-    Container, List, ListItem, ListItemButton,
-    ListItemIcon,
+    Container, List, ListItem,
+
     ListItemText,
     Paper,
     Stack,
-    styled,
     TextField,
     Typography
 } from '@mui/material';
@@ -96,3 +95,5 @@ const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
         </>
     )
 }
+
+
