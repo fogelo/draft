@@ -8,9 +8,10 @@ import {NavBar} from "./components/NavBar";
 import {grey} from "@mui/material/colors";
 import {todolistAPI, TodolistType} from "./dal/todolist-api";
 import {addTodolistAC, setTodolistsAC} from "./redux/todolist-reducer";
-import {AddItemForm} from "./AddItemForm";
+import {AddItemForm} from "./components/AddItemForm";
 import Todolist from "./components/Todolist";
 import {TaskStateType} from "./redux/tasks-reducer";
+import EditableSpan from "./components/EditableSpan";
 
 
 function App() {

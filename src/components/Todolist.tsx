@@ -4,10 +4,11 @@ import {grey} from "@mui/material/colors";
 import {useDispatch} from "react-redux";
 import {addTaskAC, removeTaskAC, setTasksAC} from "../redux/tasks-reducer";
 import {TaskType, todolistAPI, TodolistType} from "../dal/todolist-api";
-import {AddItemForm} from "../AddItemForm";
+import {AddItemForm} from "./AddItemForm";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import {removeTodolistAC} from "../redux/todolist-reducer";
+import {changeTodolistTitleAC, removeTodolistAC} from "../redux/todolist-reducer";
 import ClearIcon from "@mui/icons-material/Clear";
+import EditableSpan from "./EditableSpan";
 
 type TodolistPT = {
     todolist: TodolistType
@@ -33,6 +34,15 @@ const Todolist: FC<TodolistPT> = (props) => {
             })
     }
 
+    const changeTodolistTitle = (title: string) => {
+        todolistAPI.updateTodolist(props.todolist.id, title)
+            .then(res => {
+                if (res.data.resultCode === 0) {
+                    dispatch(changeTodolistTitleAC(props.todolist.id, title))
+                }
+            })
+    }
+
     const addTask = (title: string) => {
         todolistAPI.createTask(props.todolist.id, title)
             .then(res => {
@@ -53,7 +63,9 @@ const Todolist: FC<TodolistPT> = (props) => {
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
-                <Typography variant={"h5"} noWrap gutterBottom>{props.todolist.title}</Typography>
+                <Typography variant={"h5"} noWrap gutterBottom>
+                    <EditableSpan title={props.todolist.title} changeTitle={changeTodolistTitle}/>
+                </Typography>
                 <Button
                     variant={"text"}
                     size={"small"}
