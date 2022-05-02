@@ -1,18 +1,14 @@
-import {v1} from 'uuid';
+import {TaskType} from "../dal/todolist-api";
 
-enum TaskStatus {
-    New,
-    InProgress,
-    Completed,
-    Draft
-}
-
-const initialState: Array<TaskType> = []
+const initialState: TaskStateType = {}
 
 export const tasksReducer = (state = initialState, action: ActionType) => {
     switch (action.type) {
-        case 'add-task':
-            return [...state, {id: v1(), title: action.title, status: TaskStatus.New}]
+        case "set-tasks": {
+            return {...state, [action.todolistId]: action.tasks}
+        }
+        case "add-task":
+            return {...state, [action.task.todoListId]: [...state[action.task.todoListId], action.task]}
         default: {
             return state
         }
@@ -21,16 +17,14 @@ export const tasksReducer = (state = initialState, action: ActionType) => {
 
 
 //actions
-export const addTaskAC = (title: string) => ({type: 'add-task', title} as const)
+export const setTasksAC = (todolistId: string, tasks: TaskType[]) => ({type: "set-tasks", todolistId, tasks} as const)
+export const addTaskAC = (task: TaskType) => ({type: "add-task", task} as const)
 
 
 //types
+type ActionType = ReturnType<typeof addTaskAC> | ReturnType<typeof setTasksAC>
 
-type ActionType = ReturnType<typeof addTaskAC>
-
-export type TaskType = {
-    id: string
-    title: string
-    status: TaskStatus
+export type TaskStateType = {
+    [key: string]: Array<TaskType>
 }
 

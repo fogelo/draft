@@ -1,99 +1,65 @@
-import React, {FC} from 'react';
-import './App.css';
-import {useDispatch, useSelector} from 'react-redux';
-import {AppRootStateT} from './redux/store';
-import {addTaskAC, TaskType} from './redux/tasks-reducer';
-import {useFormik} from 'formik';
-import {
-    Button, Checkbox,
-    Container, List, ListItem,
-
-    ListItemText,
-    Paper,
-    Stack,
-    TextField,
-    Typography
-} from '@mui/material';
-import Box from '@mui/material/Box';
-import {NavBar} from './components/NavBar';
-import AddIcon from '@mui/icons-material/Add';
-import {grey} from '@mui/material/colors';
+import React, {useEffect} from "react";
+import "./App.css";
+import {useDispatch, useSelector} from "react-redux";
+import {AppRootStateT} from "./redux/store";
+import {Container, Grid, Paper, Typography} from "@mui/material";
+import Box from "@mui/material/Box";
+import {NavBar} from "./components/NavBar";
+import {grey} from "@mui/material/colors";
+import {todolistAPI, TodolistType} from "./dal/todolist-api";
+import {addTodolistAC, setTodolistsAC} from "./redux/todolist-reducer";
+import {AddItemForm} from "./AddItemForm";
+import Todolist from "./components/Todolist";
+import {TaskStateType} from "./redux/tasks-reducer";
 
 
 function App() {
-    const tasks = useSelector<AppRootStateT, Array<TaskType>>(state => state.tasks)
+    const tasks = useSelector<AppRootStateT, TaskStateType>(state => state.tasks)
+    const todolists = useSelector<AppRootStateT, Array<TodolistType>>(state => state.todolists)
     const dispatch = useDispatch()
 
-    const addTask = (title: string) => {
-        dispatch(addTaskAC(title))
+    useEffect(() => {
+        todolistAPI.getTodolists()
+            .then(res => {
+                dispatch(setTodolistsAC(res.data))
+            })
+    }, [])
+
+    const addTodolist = (title: string) => {
+        todolistAPI.createTodolist(title)
+            .then(res => {
+                dispatch(addTodolistAC(res.data.data.item))
+            })
     }
 
 
     return (
         <>
             <NavBar/>
-            <Box sx={{maxWidth: 500, margin: '0 auto 20px'}}>
+            <Box sx={{maxWidth: 500, margin: "0 auto 20px"}}>
                 <Typography color={grey[700]}>Создать Todolist</Typography>
-                <AddItemForm addItem={addTask}/>
+                <AddItemForm addItem={addTodolist}/>
             </Box>
             <Container className="App">
-                <Paper elevation={3} sx={{maxWidth: 300, padding: 1}}>
-                    <Typography color={grey[700]}>Создать Task</Typography>
-                    <AddItemForm addItem={addTask}/>
-                    <List>
-                        {tasks.map(t => (
-                            <ListItem key={t.id}>
-                                <ListItemText primary={t.title}/>
-                                <Checkbox/>
-                            </ListItem>
-                        ))}
-                    </List>
-                </Paper>
+                <Grid container spacing={2}
+                      sx={{display: "flex", justifyContent: {xs: "center", sm: "flex-start"}}}
+                >
+                    {todolists.map(tl => (
+                        <Grid key={tl.id}
+                              item
+                              xs={12} sm={6} md={4} lg={3}
+                              sx={{maxWidth: {xs: 400, sm: 300}}}
+                        >
+                            <Paper elevation={3} sx={{padding: 1}}>
+                                <Todolist tasks={tasks[tl.id]} todolist={tl}/>
+                            </Paper>
+                        </Grid>
+                    ))}
+                </Grid>
             </Container>
         </>
     );
 }
 
 export default App;
-
-type AddItemFormPT = {
-    addItem: (title: string) => void
-}
-
-const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
-    const formik = useFormik({
-        initialValues: {
-            title: '',
-        },
-        onSubmit: values => {
-            addItem(values.title)
-            formik.values.title = ''
-        },
-    });
-    return (
-        <>
-            <form onSubmit={formik.handleSubmit}>
-                <Stack direction={'row'}>
-                    <TextField
-                        variant={'outlined'}
-                        size={'small'}
-                        name={'title'}
-                        onChange={formik.handleChange}
-                        value={formik.values.title}
-                        fullWidth
-
-                    />
-                    <Button
-                        variant={'contained'}
-                        size={'small'}
-                        type={'submit'}
-                    >
-                        <AddIcon fontSize={'small'}/>
-                    </Button>
-                </Stack>
-            </form>
-        </>
-    )
-}
-
 
