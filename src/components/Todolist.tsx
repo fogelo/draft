@@ -1,10 +1,13 @@
 import React, {FC, useEffect} from "react";
-import {Checkbox, List, ListItem, ListItemText, Typography} from "@mui/material";
+import {Button, Checkbox, List, ListItem, ListItemText, Stack, Typography} from "@mui/material";
 import {grey} from "@mui/material/colors";
 import {useDispatch} from "react-redux";
-import {addTaskAC, setTasksAC} from "../redux/tasks-reducer";
+import {addTaskAC, removeTaskAC, setTasksAC} from "../redux/tasks-reducer";
 import {TaskType, todolistAPI, TodolistType} from "../dal/todolist-api";
 import {AddItemForm} from "../AddItemForm";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import {removeTodolistAC} from "../redux/todolist-reducer";
+import ClearIcon from "@mui/icons-material/Clear";
 
 type TodolistPT = {
     todolist: TodolistType
@@ -14,14 +17,6 @@ type TodolistPT = {
 const Todolist: FC<TodolistPT> = (props) => {
     const dispatch = useDispatch()
 
-    const addTask = (title: string) => {
-        todolistAPI.createTask(props.todolist.id, title)
-            .then(res => {
-                dispatch(addTaskAC(res.data.data.item))
-            })
-
-    }
-
     useEffect(() => {
         todolistAPI.getTasks(props.todolist.id)
             .then(res => {
@@ -29,17 +24,61 @@ const Todolist: FC<TodolistPT> = (props) => {
             })
     }, [])
 
+    const removeTodolist = (id: string) => {
+        todolistAPI.deleteTodolist(id)
+            .then(res => {
+                if (res.data.resultCode === 0) {
+                    dispatch(removeTodolistAC(id))
+                }
+            })
+    }
+
+    const addTask = (title: string) => {
+        todolistAPI.createTask(props.todolist.id, title)
+            .then(res => {
+                dispatch(addTaskAC(res.data.data.item))
+            })
+
+    }
+    const removeTask = (todolistId: string, taskId: string) => {
+        todolistAPI.deleteTask(todolistId, taskId)
+            .then(res => {
+                if (res.data.resultCode === 0) {
+                    dispatch(removeTaskAC(todolistId, taskId))
+                }
+            })
+    }
+
+
     return (
         <>
-            <Typography variant={"h5"} noWrap>{props.todolist.title}</Typography>
-            <Typography color={grey[700]}>Создать Task</Typography>
+            <Stack direction="row" justifyContent="space-between">
+                <Typography variant={"h5"} noWrap gutterBottom>{props.todolist.title}</Typography>
+                <Button
+                    variant={"text"}
+                    size={"small"}
+                    type={"submit"}
+                    onClick={() => removeTodolist(props.todolist.id)}
+                >
+                    <DeleteOutlineIcon fontSize={"small"}/>
+                </Button>
+            </Stack>
+            <Typography color={grey[700]}>Добавить задачу</Typography>
 
             <AddItemForm addItem={addTask}/>
             <List>
                 {props.tasks && props.tasks.map(t => (
                     <ListItem key={t.id}>
-                        <ListItemText primary={t.title}/>
                         <Checkbox/>
+                        <ListItemText primary={t.title}/>
+                        <Button
+                            variant={"text"}
+                            size={"small"}
+                            type={"submit"}
+                            onClick={() => removeTask(props.todolist.id, t.id)}
+                        >
+                            <ClearIcon fontSize={"small"}/>
+                        </Button>
                     </ListItem>
                 ))}
             </List>

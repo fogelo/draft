@@ -32,12 +32,11 @@ function App() {
             })
     }
 
-
     return (
         <>
             <NavBar/>
             <Box sx={{maxWidth: 500, margin: "0 auto 20px"}}>
-                <Typography color={grey[700]}>Создать Todolist</Typography>
+                <Typography color={grey[700]}>Добавит список</Typography>
                 <AddItemForm addItem={addTodolist}/>
             </Box>
             <Container className="App">
