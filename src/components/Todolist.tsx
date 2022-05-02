@@ -1,24 +1,23 @@
-import React, {FC, useEffect} from "react";
+import React, {ChangeEvent, FC, useEffect} from "react";
 import {Button, Checkbox, List, ListItem, ListItemText, Stack, Typography} from "@mui/material";
 import {grey} from "@mui/material/colors";
 import {useDispatch} from "react-redux";
 import {
-    TasksActionType,
     addTaskAC,
-    changeTaskTitleAC,
+    changeTaskStatusTC,
     changeTaskTitleTC,
     removeTaskAC,
-    setTasksAC
+    setTasksAC,
+    TasksActionType
 } from "../redux/tasks-reducer";
-import {TaskType, todolistAPI, TodolistType, UpdateTaskRequestType} from "../dal/todolist-api";
+import {TaskStatus, TaskType, todolistAPI, TodolistType} from "../dal/todolist-api";
 import {AddItemForm} from "./AddItemForm";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {changeTodolistTitleAC, removeTodolistAC, TodolistActionType} from "../redux/todolist-reducer";
 import ClearIcon from "@mui/icons-material/Clear";
 import EditableSpan from "./EditableSpan";
-import {AnyAction, Dispatch} from "redux";
-import {ThunkActionDispatch, ThunkDispatch} from "redux-thunk";
-import {AppRootStateT, store} from "../redux/store";
+import {ThunkDispatch} from "redux-thunk";
+import {AppRootStateT} from "../redux/store";
 
 type TodolistPT = {
     todolist: TodolistType
@@ -93,10 +92,12 @@ const Todolist: FC<TodolistPT> = (props) => {
                     const changeTaskTitle = (title: string) => {
                         dispatch(changeTaskTitleTC(props.todolist.id, t.id, title))
                     }
+                    const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
+                        dispatch(changeTaskStatusTC(props.todolist.id, t.id, e.target.checked ? TaskStatus.Completed : TaskStatus.New))
+                    }
                     return (
                         <ListItem key={t.id}>
-                            <Checkbox/>
-                            {/*<ListItemText primary={t.title}/>*/}
+                            <Checkbox onChange={changeTaskStatus} checked={t.status !== TaskStatus.New}/>
                             <ListItemText
                                 primary={<EditableSpan title={t.title} changeTitle={changeTaskTitle}/>}
                             />
