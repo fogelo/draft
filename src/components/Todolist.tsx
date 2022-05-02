@@ -2,13 +2,23 @@ import React, {FC, useEffect} from "react";
 import {Button, Checkbox, List, ListItem, ListItemText, Stack, Typography} from "@mui/material";
 import {grey} from "@mui/material/colors";
 import {useDispatch} from "react-redux";
-import {addTaskAC, removeTaskAC, setTasksAC} from "../redux/tasks-reducer";
-import {TaskType, todolistAPI, TodolistType} from "../dal/todolist-api";
+import {
+    TasksActionType,
+    addTaskAC,
+    changeTaskTitleAC,
+    changeTaskTitleTC,
+    removeTaskAC,
+    setTasksAC
+} from "../redux/tasks-reducer";
+import {TaskType, todolistAPI, TodolistType, UpdateTaskRequestType} from "../dal/todolist-api";
 import {AddItemForm} from "./AddItemForm";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import {changeTodolistTitleAC, removeTodolistAC} from "../redux/todolist-reducer";
+import {changeTodolistTitleAC, removeTodolistAC, TodolistActionType} from "../redux/todolist-reducer";
 import ClearIcon from "@mui/icons-material/Clear";
 import EditableSpan from "./EditableSpan";
+import {AnyAction, Dispatch} from "redux";
+import {ThunkActionDispatch, ThunkDispatch} from "redux-thunk";
+import {AppRootStateT, store} from "../redux/store";
 
 type TodolistPT = {
     todolist: TodolistType
@@ -16,7 +26,8 @@ type TodolistPT = {
 }
 
 const Todolist: FC<TodolistPT> = (props) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch<ThunkDispatch<AppRootStateT, void, TasksActionType | TodolistActionType>>()
+    // const dispatch: ThunkActionDispatch<any> = useDispatch()
 
     useEffect(() => {
         todolistAPI.getTasks(props.todolist.id)
@@ -59,7 +70,6 @@ const Todolist: FC<TodolistPT> = (props) => {
             })
     }
 
-
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
@@ -79,20 +89,28 @@ const Todolist: FC<TodolistPT> = (props) => {
 
             <AddItemForm addItem={addTask}/>
             <List>
-                {props.tasks && props.tasks.map(t => (
-                    <ListItem key={t.id}>
-                        <Checkbox/>
-                        <ListItemText primary={t.title}/>
-                        <Button
-                            variant={"text"}
-                            size={"small"}
-                            type={"submit"}
-                            onClick={() => removeTask(props.todolist.id, t.id)}
-                        >
-                            <ClearIcon fontSize={"small"}/>
-                        </Button>
-                    </ListItem>
-                ))}
+                {props.tasks && props.tasks.map(t => {
+                    const changeTaskTitle = (title: string) => {
+                        dispatch(changeTaskTitleTC(props.todolist.id, t.id, title))
+                    }
+                    return (
+                        <ListItem key={t.id}>
+                            <Checkbox/>
+                            {/*<ListItemText primary={t.title}/>*/}
+                            <ListItemText
+                                primary={<EditableSpan title={t.title} changeTitle={changeTaskTitle}/>}
+                            />
+                            <Button
+                                variant={"text"}
+                                size={"small"}
+                                type={"submit"}
+                                onClick={() => removeTask(props.todolist.id, t.id)}
+                            >
+                                <ClearIcon fontSize={"small"}/>
+                            </Button>
+                        </ListItem>
+                    )
+                })}
             </List>
         </>
     );

@@ -51,23 +51,23 @@ type ResponseType<D = {}> = {
     resultCode: number
 }
 
-type UpdateTaskRequestType = {
+export type UpdateTaskRequestType = {
     title: string
-    description: string
-    completed: boolean
-    status: number
+    description: null | string
+    completed?: boolean
+    status: TaskStatus
     priority: number
-    startDate: string
-    deadline: string
+    startDate: null | string
+    deadline: null | string
 }
 type UpdateTaskResponseType = {
-    description: string
+    description: null | string
     title: string
-    completed: boolean
-    status: number
+    completed?: boolean
+    status: TaskStatus
     priority: number
-    startDate: string
-    deadline: string
+    startDate: null | string
+    deadline: null | string
     id: string
     todoListId: string
     order: number

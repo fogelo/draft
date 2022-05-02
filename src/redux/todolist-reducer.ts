@@ -3,7 +3,7 @@ import {TodolistType} from "../dal/todolist-api";
 
 const initialState: Array<TodolistType> = []
 
-export const todolistReducer = (state = initialState, action: ActionType) => {
+export const todolistReducer = (state = initialState, action: TodolistActionType) => {
     switch (action.type) {
         case "set-todolists":
             return [...state, ...action.todolists]
@@ -31,7 +31,7 @@ export const changeTodolistTitleAC = (id: string, title: string) => ({
 } as const)
 
 //types
-type ActionType =
+export type TodolistActionType =
     | ReturnType<typeof addTodolistAC>
     | ReturnType<typeof removeTodolistAC>
     | ReturnType<typeof setTodolistsAC>

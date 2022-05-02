@@ -1,4 +1,4 @@
-import React, {FC, useState} from "react";
+import React, {FC, KeyboardEvent, useState} from "react";
 import {TextField, Typography} from "@mui/material";
 
 
@@ -19,6 +19,13 @@ const EditableSpan: FC<EditableSpanPT> = (props) => {
         props.changeTitle(title)
     }
 
+    const handleOnKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            deActivateEditeMode()
+        }
+    }
+
+
     return (
         <>
             {editMode
@@ -30,9 +37,11 @@ const EditableSpan: FC<EditableSpanPT> = (props) => {
                     value={title}
                     autoFocus
                     onBlur={deActivateEditeMode}
+                    onKeyPress={handleOnKeyPress}
                     fullWidth
                 />
-                : <Typography onDoubleClick={activateEditeMode}>{title}</Typography>}
+                : <Typography onClick={activateEditeMode}>{title}</Typography>
+            }
         </>
     );
 };
