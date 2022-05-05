@@ -15,9 +15,8 @@ import LinearProgress from "@mui/material/LinearProgress";
 import {ThunkDispatch} from "redux-thunk";
 
 type PropsType = any
-export const TodolistList: FC<PropsType> = (props) => {
+export const TodolistList: FC<PropsType> = React.memo((props) => {
     const todolists = useSelector<AppRootStateT, Array<TodolistDomainType>>(state => state.todolists)
-    // debugger
     const tasks = useSelector<AppRootStateT, TaskStateType>(state => state.tasks)
     const status = useSelector<AppRootStateT, RequestStatusType>(state => state.app.status)
     const isLoggedIn = useSelector<AppRootStateT, boolean>(state => state.auth.isLoggedIn)
@@ -67,4 +66,4 @@ export const TodolistList: FC<PropsType> = (props) => {
             </Container>
         </>
     )
-}
+})

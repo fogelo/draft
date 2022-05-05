@@ -11,10 +11,9 @@ import {ThunkDispatch} from "redux-thunk";
 import CustomizedSnackbar from "./components/ErrorSnackBar";
 
 
-function App() {
+const App = React.memo(() => {
 
     const isInitialized = useSelector<AppRootStateT, boolean>(state => state.app.isInitialized)
-    const error = useSelector<AppRootStateT, string | null>(state => state.app.error)
 
     const dispatch: ThunkDispatch<any, any, any> = useDispatch()
 
@@ -26,7 +25,8 @@ function App() {
     if (!isInitialized) {
         return <CircularProgress/>
     }
-console.log('app')
+
+    console.log("app")
     return (
         <>
             <CustomizedSnackbar/>
@@ -36,7 +36,7 @@ console.log('app')
             </Routes>
         </>
     );
-}
+})
 
 export default App;
 

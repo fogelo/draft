@@ -31,7 +31,7 @@ type TodolistPT = {
     tasks: TaskType[]
 }
 
-const Todolist: FC<TodolistPT> = (props) => {
+const Todolist: FC<TodolistPT> = React.memo((props) => {
 
     // const error = useSelector<AppRootStateT, string | null>(state => state.app.error)
     const dispatch = useDispatch<ThunkDispatch<AppRootStateT, void, TasksActionType | TodolistActionType>>()
@@ -69,7 +69,7 @@ const Todolist: FC<TodolistPT> = (props) => {
     if (props.todolist.filter === "completed") {
         filteredTasks = filteredTasks.filter(t => t.status === TaskStatus.Completed)
     }
-    console.log('todolist')
+    console.log("todolist")
     return (
         <>
             {/*<CustomizedSnackbar/>*/}
@@ -115,7 +115,7 @@ const Todolist: FC<TodolistPT> = (props) => {
                     )
                 })}
             </List>
-            <ButtonGroup variant={"outlined"} >
+            <ButtonGroup variant={"outlined"}>
                 <Button onClick={() => changeFilter("all")}>all</Button>
                 <Button onClick={() => changeFilter("active")}>active</Button>
                 <Button onClick={() => changeFilter("completed")}>completed</Button>
@@ -123,6 +123,6 @@ const Todolist: FC<TodolistPT> = (props) => {
 
         </>
     );
-};
+});
 
 export default Todolist;

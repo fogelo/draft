@@ -9,7 +9,7 @@ import {deepOrange} from "@mui/material/colors";
 import {logoutTC} from "../redux/auth-reducer";
 import {ThunkDispatch} from "redux-thunk";
 
-export const NavBar = () => {
+export const NavBar = React.memo(() => {
     const userData = useSelector<AppRootStateT, UserDataType>(state => state.auth.userData)
     const dispatch: ThunkDispatch<any, any, any> = useDispatch()
 
@@ -46,4 +46,4 @@ export const NavBar = () => {
             </AppBar>
         </Box>
     );
-};
+});

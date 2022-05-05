@@ -1,14 +1,13 @@
 import React, {useEffect} from "react";
 import {useFormik} from "formik";
 import {Button, Checkbox, FormControlLabel, Stack, TextField} from "@mui/material";
-import {authAPI} from "./dal/todolist-api";
 import {useDispatch, useSelector} from "react-redux";
-import {loginTC, setIsLoggedInAC} from "./redux/auth-reducer";
+import {loginTC} from "./redux/auth-reducer";
 import {useNavigate} from "react-router-dom";
 import {AppRootStateT} from "./redux/store";
 import {ThunkDispatch} from "redux-thunk";
 
-const LoginForm = () => {
+const LoginForm = React.memo(() => {
 
     const isLoggedIn = useSelector<AppRootStateT, boolean>(state => state.auth.isLoggedIn)
     const dispatch: ThunkDispatch<any, any, any> = useDispatch()
@@ -64,6 +63,6 @@ const LoginForm = () => {
 
 
     );
-};
+});
 
 export default LoginForm;

@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 type AddItemFormPT = {
     addItem: (title: string) => void
 }
-export const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
+export const AddItemForm: FC<AddItemFormPT> = React.memo(({addItem, ...props}) => {
     const formik = useFormik({
         initialValues: {
             title: "",
@@ -23,7 +23,7 @@ export const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
             return errors
         }
     });
-    console.log('additem form')
+    console.log("additem form")
     return (
         <>
             <form onSubmit={formik.handleSubmit}>
@@ -50,4 +50,4 @@ export const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
             </form>
         </>
     )
-}
+})
