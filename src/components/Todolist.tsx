@@ -3,17 +3,17 @@ import {Button, Checkbox, List, ListItem, ListItemText, Stack, Typography} from 
 import {grey} from "@mui/material/colors";
 import {useDispatch} from "react-redux";
 import {
-    addTaskAC,
+    addTaskTC,
     changeTaskStatusTC,
     changeTaskTitleTC,
-    removeTaskAC,
-    setTasksAC,
+    fetchTasksTC,
+    removeTaskTC,
     TasksActionType
 } from "../redux/tasks-reducer";
-import {TaskStatus, TaskType, todolistAPI, TodolistType} from "../dal/todolist-api";
+import {TaskStatus, TaskType, TodolistType} from "../dal/todolist-api";
 import {AddItemForm} from "./AddItemForm";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import {changeTodolistTitleAC, removeTodolistAC, TodolistActionType} from "../redux/todolist-reducer";
+import {changeTodolistTitleTC, removeTodolistTC, TodolistActionType} from "../redux/todolist-reducer";
 import ClearIcon from "@mui/icons-material/Clear";
 import EditableSpan from "./EditableSpan";
 import {ThunkDispatch} from "redux-thunk";
@@ -29,44 +29,23 @@ const Todolist: FC<TodolistPT> = (props) => {
     // const dispatch: ThunkActionDispatch<any> = useDispatch()
 
     useEffect(() => {
-        todolistAPI.getTasks(props.todolist.id)
-            .then(res => {
-                dispatch(setTasksAC(props.todolist.id, res.data.items))
-            })
+        dispatch(fetchTasksTC(props.todolist.id))
     }, [])
 
     const removeTodolist = (id: string) => {
-        todolistAPI.deleteTodolist(id)
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    dispatch(removeTodolistAC(id))
-                }
-            })
+        dispatch(removeTodolistTC(id))
     }
 
     const changeTodolistTitle = (title: string) => {
-        todolistAPI.updateTodolist(props.todolist.id, title)
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    dispatch(changeTodolistTitleAC(props.todolist.id, title))
-                }
-            })
+        dispatch(changeTodolistTitleTC(props.todolist.id, title))
     }
 
     const addTask = (title: string) => {
-        todolistAPI.createTask(props.todolist.id, title)
-            .then(res => {
-                dispatch(addTaskAC(res.data.data.item))
-            })
-
+        dispatch(addTaskTC(props.todolist.id, title))
     }
+
     const removeTask = (todolistId: string, taskId: string) => {
-        todolistAPI.deleteTask(todolistId, taskId)
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    dispatch(removeTaskAC(todolistId, taskId))
-                }
-            })
+        dispatch(removeTaskTC(todolistId, taskId))
     }
 
     return (

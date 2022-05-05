@@ -1,4 +1,6 @@
-import {TodolistType} from "../dal/todolist-api";
+import {todolistAPI, TodolistType} from "../dal/todolist-api";
+import {Dispatch} from "redux";
+import {setAppStatusAC} from "../app-reducer";
 
 
 const initialState: Array<TodolistType> = []
@@ -29,6 +31,41 @@ export const changeTodolistTitleAC = (id: string, title: string) => ({
     id,
     title
 } as const)
+
+//thunks
+export const fetchTodolistsTC = () => (dispatch: Dispatch) => {
+    todolistAPI.getTodolists()
+        .then(res => {
+            dispatch(setTodolistsAC(res.data))
+        })
+}
+export const addTodolistTC = (title: string) => (dispatch: Dispatch) => {
+    dispatch(setAppStatusAC("loading"))
+    todolistAPI.createTodolist(title)
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                dispatch(addTodolistAC(res.data.data.item))
+                dispatch(setAppStatusAC("succeeded"))
+            }
+        })
+}
+export const removeTodolistTC = (id: string) => (dispatch: Dispatch) => {
+    todolistAPI.deleteTodolist(id)
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                dispatch(removeTodolistAC(id))
+            }
+        })
+}
+export const changeTodolistTitleTC = (id: string, title: string) => (dispatch: Dispatch) => {
+    todolistAPI.updateTodolist(id, title)
+        .then(res => {
+            if (res.data.resultCode === 0) {
+                dispatch(changeTodolistTitleAC(id, title))
+            }
+        })
+}
+
 
 //types
 export type TodolistActionType =

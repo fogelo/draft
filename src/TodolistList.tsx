@@ -8,36 +8,42 @@ import {TaskStateType} from "./redux/tasks-reducer";
 import Box from "@mui/material/Box";
 import {grey} from "@mui/material/colors";
 import {AddItemForm} from "./components/AddItemForm";
-import {addTodolistAC, setTodolistsAC} from "./redux/todolist-reducer";
-import {setAppStatusAC} from "./app-reducer";
+import {addTodolistAC, addTodolistTC, fetchTodolistsTC, setTodolistsAC} from "./redux/todolist-reducer";
+import {RequestStatusType, setAppStatusAC} from "./app-reducer";
+import {useNavigate} from "react-router-dom";
+import {NavBar} from "./components/NavBar";
+import LinearProgress from "@mui/material/LinearProgress";
+import {ThunkDispatch} from "redux-thunk";
 
 type PropsType = any
 export const TodolistList: FC<PropsType> = (props) => {
-    const isInitialized = useSelector<AppRootStateT, boolean>(state => state.app.isInitialized)
     const todolists = useSelector<AppRootStateT, Array<TodolistType>>(state => state.todolists)
     const tasks = useSelector<AppRootStateT, TaskStateType>(state => state.tasks)
-    const dispatch = useDispatch()
+    const status = useSelector<AppRootStateT, RequestStatusType>(state => state.app.status)
+    const isLoggedIn = useSelector<AppRootStateT, boolean>(state => state.auth.isLoggedIn)
+    const navigate = useNavigate()
+    const dispatch: ThunkDispatch<any, any, any> = useDispatch()
 
+    console.log("Todolists")
 
     useEffect(() => {
-        todolistAPI.getTodolists()
-            .then(res => {
-                dispatch(setTodolistsAC(res.data))
-            })
-    }, [])
+        if (!isLoggedIn) {
+            navigate("/login")
+        } else {
+            dispatch(fetchTodolistsTC())
+        }
+
+    }, [isLoggedIn])
 
 
     const addTodolist = (title: string) => {
-        dispatch(setAppStatusAC("loading"))
-        todolistAPI.createTodolist(title)
-            .then(res => {
-                dispatch(addTodolistAC(res.data.data.item))
-                dispatch(setAppStatusAC("succeeded"))
-            })
+        dispatch(addTodolistTC(title))
     }
 
     return (
         <>
+            <NavBar/>
+            {status === "loading" && <LinearProgress/>}
             <Box sx={{maxWidth: 500, margin: "16px auto 20px"}}>
                 <Typography color={grey[700]}>Добавит список</Typography>
                 <AddItemForm addItem={addTodolist}/>

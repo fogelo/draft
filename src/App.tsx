@@ -2,33 +2,23 @@ import React, {useEffect} from "react";
 import "./App.css";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateT} from "./redux/store";
-import {NavBar} from "./components/NavBar";
 import {authAPI} from "./dal/todolist-api";
-import {RequestStatusType, setIsInitializedAC} from "./app-reducer";
-import LinearProgress from "@mui/material/LinearProgress";
+import {initializingAppTC, setIsInitializedAC} from "./app-reducer";
 import {TodolistList} from "./TodolistList";
 import CircularProgress from "@mui/material/CircularProgress";
-import {setUserDataAC} from "./redux/auth-reducer";
-import {Routes, Route} from "react-router-dom";
-import Login from "./Login";
+import {setIsLoggedInAC, setUserDataAC} from "./redux/auth-reducer";
+import {Route, Routes} from "react-router-dom";
+import LoginForm from "./LoginForm";
+import {ThunkDispatch} from "redux-thunk";
 
 
 function App() {
     const isInitialized = useSelector<AppRootStateT, boolean>(state => state.app.isInitialized)
-    const status = useSelector<AppRootStateT, RequestStatusType>(state => state.app.status)
-
-    const dispatch = useDispatch()
+    const dispatch: ThunkDispatch<any, any, any> = useDispatch()
     // const navigate = useNavigate()
 
     useEffect(() => {
-        authAPI.me()
-            .then(res => {
-                if (res.data.resultCode === 0) {
-                    const data = res.data.data
-                    dispatch(setUserDataAC(data.id, data.email, data.login))
-                    dispatch(setIsInitializedAC(true))
-                }
-            })
+                dispatch(initializingAppTC())
     }, [])
 
     if (!isInitialized) {
@@ -37,11 +27,9 @@ function App() {
 
     return (
         <>
-            <NavBar/>
-            {status === "loading" && <LinearProgress/>}
             <Routes>
                 <Route path={"/"} element={<TodolistList/>}/>
-                <Route path={"/login"} element={<Login/>}/>
+                <Route path={"/login"} element={<LoginForm/>}/>
             </Routes>
 
         </>
