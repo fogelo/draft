@@ -24,7 +24,7 @@ export const TodolistList: FC<PropsType> = (props) => {
     const navigate = useNavigate()
     const dispatch: ThunkDispatch<any, any, any> = useDispatch()
 
-    console.log("Todolists")
+
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -39,7 +39,7 @@ export const TodolistList: FC<PropsType> = (props) => {
     const addTodolist = (title: string) => {
         dispatch(addTodolistTC(title))
     }
-
+    console.log("todolists")
     return (
         <>
             <NavBar/>

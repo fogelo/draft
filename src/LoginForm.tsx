@@ -9,7 +9,7 @@ import {AppRootStateT} from "./redux/store";
 import {ThunkDispatch} from "redux-thunk";
 
 const LoginForm = () => {
-    console.log("Login")
+
     const isLoggedIn = useSelector<AppRootStateT, boolean>(state => state.auth.isLoggedIn)
     const dispatch: ThunkDispatch<any, any, any> = useDispatch()
     const navigate = useNavigate()
@@ -30,7 +30,7 @@ const LoginForm = () => {
             dispatch(loginTC(values.email, values.password, values.rememberMe))
         },
     });
-
+    console.log("login form")
     return (
 
         <form onSubmit={formik.handleSubmit}>

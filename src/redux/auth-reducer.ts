@@ -1,6 +1,7 @@
 import {authAPI, todolistAPI, UserDataType} from "../dal/todolist-api";
 import {Dispatch} from "redux";
 import {setTodolistsAC} from "./todolist-reducer";
+import {setErrorAC} from "../app-reducer";
 
 const initialState: InitAuthStateType = {
     userData: {
@@ -34,16 +35,24 @@ export const loginTC = (email: string, password: string, rememberMe: boolean) =>
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(setIsLoggedInAC(true))
+            } else if (res.data.resultCode === 1) {
+                dispatch(setErrorAC(res.data.messages[0]))
             }
-        })
+        }).catch(error => {
+        dispatch(setErrorAC(error.message))
+    })
 }
 export const logoutTC = () => (dispatch: Dispatch) => {
     authAPI.logout()
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(setIsLoggedInAC(false))
+            } else if (res.data.resultCode === 1) {
+                dispatch(setErrorAC(res.data.messages[0]))
             }
-        })
+        }).catch(error => {
+        dispatch(setErrorAC(error.message))
+    })
 }
 
 

@@ -4,7 +4,8 @@ import {setIsLoggedInAC, setUserDataAC} from "./redux/auth-reducer";
 
 const initState: InitAppStateType = {
     status: "idle",
-    isInitialized: false
+    isInitialized: false,
+    error: null
 }
 
 
@@ -14,6 +15,8 @@ export const appReducer = (state = initState, action: AppActionType) => {
             return {...state, status: action.status}
         case "set-initialized":
             return {...state, isInitialized: action.init}
+        case "set-error":
+            return {...state, error: action.error}
         default: {
             return state
         }
@@ -24,6 +27,8 @@ export const appReducer = (state = initState, action: AppActionType) => {
 
 export const setAppStatusAC = (status: RequestStatusType) => ({type: "set-app-status", status} as const)
 export const setIsInitializedAC = (init: boolean) => ({type: "set-initialized", init} as const)
+export const setErrorAC = (error: null | string) => ({type: "set-error", error} as const)
+
 // thunks
 
 export const initializingAppTC = () => (dispatch: Dispatch) => {
@@ -44,6 +49,10 @@ export type RequestStatusType = "idle" | "loading" | "succeeded" | "failed"
 type InitAppStateType = {
     status: RequestStatusType
     isInitialized: boolean
+    error: string | null
 }
 
-type AppActionType = ReturnType<typeof setAppStatusAC> | ReturnType<typeof setIsInitializedAC>
+type AppActionType =
+    ReturnType<typeof setAppStatusAC>
+    | ReturnType<typeof setIsInitializedAC>
+    | ReturnType<typeof setErrorAC>

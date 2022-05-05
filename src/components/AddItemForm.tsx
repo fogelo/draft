@@ -23,6 +23,7 @@ export const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
             return errors
         }
     });
+    console.log('additem form')
     return (
         <>
             <form onSubmit={formik.handleSubmit}>

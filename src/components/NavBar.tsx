@@ -16,6 +16,7 @@ export const NavBar = () => {
     const onClickHandler = () => {
         dispatch(logoutTC())
     }
+    console.log("navbar")
     return (
         <Box sx={{flexGrow: 1}}>
             <AppBar position="static">

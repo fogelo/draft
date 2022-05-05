@@ -2,6 +2,7 @@ import {TaskStatus, TaskType, todolistAPI, UpdateTaskRequestType} from "../dal/t
 import {AnyAction, Dispatch} from "redux";
 import {AppRootStateT} from "./store";
 import {setTodolistsAC, TodolistActionType} from "./todolist-reducer";
+import {setAppStatusAC} from "../app-reducer";
 
 const initialState: TaskStateType = {}
 
@@ -48,16 +49,20 @@ export const fetchTasksTC = (todolistId: string) => (dispatch: Dispatch) => {
         })
 }
 export const addTaskTC = (todolistId: string, title: string) => (dispatch: Dispatch) => {
+    dispatch(setAppStatusAC("loading"))
     todolistAPI.createTask(todolistId, title)
         .then(res => {
             dispatch(addTaskAC(res.data.data.item))
+            dispatch(setAppStatusAC("succeeded"))
         })
 }
 export const removeTaskTC = (todolistId: string, taskId: string) => (dispatch: Dispatch) => {
+    dispatch(setAppStatusAC("loading"))
     todolistAPI.deleteTask(todolistId, taskId)
         .then(res => {
             if (res.data.resultCode === 0) {
                 dispatch(removeTaskAC(todolistId, taskId))
+                dispatch(setAppStatusAC("succeeded"))
             }
         })
 }

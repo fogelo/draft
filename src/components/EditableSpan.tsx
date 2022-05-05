@@ -25,7 +25,7 @@ const EditableSpan: FC<EditableSpanPT> = (props) => {
         }
     }
 
-
+    console.log('editable span')
     return (
         <>
             {editMode

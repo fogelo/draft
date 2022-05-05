@@ -1,7 +1,7 @@
 import React, {ChangeEvent, FC, useEffect} from "react";
-import {Button, Checkbox, List, ListItem, ListItemText, Stack, Typography} from "@mui/material";
+import {Button, ButtonGroup, Checkbox, List, ListItem, ListItemText, Stack, Typography} from "@mui/material";
 import {grey} from "@mui/material/colors";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {
     addTaskTC,
     changeTaskStatusTC,
@@ -24,6 +24,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import EditableSpan from "./EditableSpan";
 import {ThunkDispatch} from "redux-thunk";
 import {AppRootStateT} from "../redux/store";
+import CustomizedSnackbar from "./ErrorSnackBar";
 
 type TodolistPT = {
     todolist: TodolistDomainType
@@ -31,6 +32,8 @@ type TodolistPT = {
 }
 
 const Todolist: FC<TodolistPT> = (props) => {
+
+    // const error = useSelector<AppRootStateT, string | null>(state => state.app.error)
     const dispatch = useDispatch<ThunkDispatch<AppRootStateT, void, TasksActionType | TodolistActionType>>()
     // const dispatch: ThunkActionDispatch<any> = useDispatch()
 
@@ -66,8 +69,10 @@ const Todolist: FC<TodolistPT> = (props) => {
     if (props.todolist.filter === "completed") {
         filteredTasks = filteredTasks.filter(t => t.status === TaskStatus.Completed)
     }
+    console.log('todolist')
     return (
         <>
+            {/*<CustomizedSnackbar/>*/}
             <Stack direction="row" justifyContent="space-between">
                 <Typography variant={"h5"} noWrap gutterBottom>
                     <EditableSpan title={props.todolist.title} changeTitle={changeTodolistTitle}/>
@@ -110,9 +115,12 @@ const Todolist: FC<TodolistPT> = (props) => {
                     )
                 })}
             </List>
-            <button onClick={() => changeFilter("all")}>all</button>
-            <button onClick={() => changeFilter("active")}>active</button>
-            <button onClick={() => changeFilter("completed")}>completed</button>
+            <ButtonGroup variant={"outlined"} >
+                <Button onClick={() => changeFilter("all")}>all</Button>
+                <Button onClick={() => changeFilter("active")}>active</Button>
+                <Button onClick={() => changeFilter("completed")}>completed</Button>
+            </ButtonGroup>
+
         </>
     );
 };
