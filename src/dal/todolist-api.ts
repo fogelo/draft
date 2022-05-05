@@ -5,9 +5,21 @@ const instance = axios.create({
     withCredentials: true,
     headers: {
         "api-key": "b1356b5e-074b-4608-a733-39db627817e8",
-        // "Set-Cookie": "cross-site-cookie=whatever; SameSite=None; Secure"
     }
 });
+
+
+export const authAPI = {
+    me() {
+        return instance.get<ResponseType<UserDataType>>("auth/me")
+    },
+    login(email: string, password: string, rememberMe: boolean) {
+        return instance.post<ResponseType<{ userId: number }>>("auth/login", {email, password, rememberMe})
+    },
+    logout(){
+        return instance.delete<ResponseType>("auth/login")
+    }
+}
 
 export const todolistAPI = {
     getTodolists() {
@@ -47,7 +59,7 @@ export type TodolistType = {
 type ResponseType<D = {}> = {
     data: D,
     messages: string[],
-    fieldsErrors: number[],
+    fieldsErrors?: number[],
     resultCode: number
 }
 
@@ -98,4 +110,10 @@ type GetTasksResponseType = {
     items: TaskType[]
     totalCount: number,
     error: null | string
+}
+
+export type UserDataType = {
+    id: number
+    email: string
+    login: string
 }

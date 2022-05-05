@@ -15,6 +15,13 @@ export const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
             addItem(values.title)
             formik.values.title = ""
         },
+        validate(values) {
+            const errors: any = {}
+            if (!values.title) {
+                errors.title = "Заполните поле"
+            }
+            return errors
+        }
     });
     return (
         <>
@@ -27,6 +34,8 @@ export const AddItemForm: FC<AddItemFormPT> = ({addItem, ...props}) => {
                         onChange={formik.handleChange}
                         value={formik.values.title}
                         fullWidth
+                        error={!!formik.errors.title}
+                        helperText={formik.errors.title}
 
                     />
                     <Button
