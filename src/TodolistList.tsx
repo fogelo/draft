@@ -3,13 +3,12 @@ import {Container, Grid, Paper, Typography} from "@mui/material";
 import Todolist from "./components/Todolist";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateT} from "./redux/store";
-import {todolistAPI, TodolistType} from "./dal/todolist-api";
 import {TaskStateType} from "./redux/tasks-reducer";
 import Box from "@mui/material/Box";
 import {grey} from "@mui/material/colors";
 import {AddItemForm} from "./components/AddItemForm";
-import {addTodolistAC, addTodolistTC, fetchTodolistsTC, setTodolistsAC} from "./redux/todolist-reducer";
-import {RequestStatusType, setAppStatusAC} from "./app-reducer";
+import {addTodolistTC, fetchTodolistsTC, TodolistDomainType} from "./redux/todolist-reducer";
+import {RequestStatusType} from "./app-reducer";
 import {useNavigate} from "react-router-dom";
 import {NavBar} from "./components/NavBar";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -17,7 +16,8 @@ import {ThunkDispatch} from "redux-thunk";
 
 type PropsType = any
 export const TodolistList: FC<PropsType> = (props) => {
-    const todolists = useSelector<AppRootStateT, Array<TodolistType>>(state => state.todolists)
+    const todolists = useSelector<AppRootStateT, Array<TodolistDomainType>>(state => state.todolists)
+    // debugger
     const tasks = useSelector<AppRootStateT, TaskStateType>(state => state.tasks)
     const status = useSelector<AppRootStateT, RequestStatusType>(state => state.app.status)
     const isLoggedIn = useSelector<AppRootStateT, boolean>(state => state.auth.isLoggedIn)

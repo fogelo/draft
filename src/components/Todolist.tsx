@@ -10,17 +10,23 @@ import {
     removeTaskTC,
     TasksActionType
 } from "../redux/tasks-reducer";
-import {TaskStatus, TaskType, TodolistType} from "../dal/todolist-api";
+import {TaskStatus, TaskType} from "../dal/todolist-api";
 import {AddItemForm} from "./AddItemForm";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import {changeTodolistTitleTC, removeTodolistTC, TodolistActionType} from "../redux/todolist-reducer";
+import {
+    changeFilterAC,
+    changeTodolistTitleTC,
+    removeTodolistTC,
+    TodolistActionType,
+    TodolistDomainType
+} from "../redux/todolist-reducer";
 import ClearIcon from "@mui/icons-material/Clear";
 import EditableSpan from "./EditableSpan";
 import {ThunkDispatch} from "redux-thunk";
 import {AppRootStateT} from "../redux/store";
 
 type TodolistPT = {
-    todolist: TodolistType
+    todolist: TodolistDomainType
     tasks: TaskType[]
 }
 
@@ -48,6 +54,18 @@ const Todolist: FC<TodolistPT> = (props) => {
         dispatch(removeTaskTC(todolistId, taskId))
     }
 
+
+    const changeFilter = (filter: string) => {
+        dispatch(changeFilterAC(props.todolist.id, filter))
+    }
+
+    let filteredTasks = props.tasks
+    if (props.todolist.filter === "active") {
+        filteredTasks = filteredTasks.filter(t => t.status === TaskStatus.New)
+    }
+    if (props.todolist.filter === "completed") {
+        filteredTasks = filteredTasks.filter(t => t.status === TaskStatus.Completed)
+    }
     return (
         <>
             <Stack direction="row" justifyContent="space-between">
@@ -67,7 +85,7 @@ const Todolist: FC<TodolistPT> = (props) => {
 
             <AddItemForm addItem={addTask}/>
             <List>
-                {props.tasks && props.tasks.map(t => {
+                {props.tasks && filteredTasks.map(t => {
                     const changeTaskTitle = (title: string) => {
                         dispatch(changeTaskTitleTC(props.todolist.id, t.id, title))
                     }
@@ -92,6 +110,9 @@ const Todolist: FC<TodolistPT> = (props) => {
                     )
                 })}
             </List>
+            <button onClick={() => changeFilter("all")}>all</button>
+            <button onClick={() => changeFilter("active")}>active</button>
+            <button onClick={() => changeFilter("completed")}>completed</button>
         </>
     );
 };
